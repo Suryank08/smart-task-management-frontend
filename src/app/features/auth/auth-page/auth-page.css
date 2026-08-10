@@ -1,0 +1,71 @@
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 1.5rem;
+  box-sizing: border-box;
+  background: linear-gradient(180deg, var(--mat-sys-surface-container-low), var(--mat-sys-surface));
+  position: relative;
+}
+
+.auth-page__theme-toggle {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+}
+
+.auth-page__card {
+  width: 100%;
+  max-width: 420px;
+  padding: 1.75rem 1.5rem 0.5rem;
+  box-sizing: border-box;
+}
+
+.auth-page__brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--mat-sys-primary);
+}
+
+.auth-page__subtitle {
+  text-align: center;
+  color: var(--mat-sys-on-surface-variant);
+  margin: 0.35rem 0 1.25rem;
+}
+
+.auth-page__form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 1.25rem 0.25rem 1.5rem;
+}
+
+.auth-page__form button[type='submit'] {
+  height: 42px;
+  margin-top: 0.5rem;
+}
+
+.auth-page__accounts {
+  padding: 0.75rem 0 1rem;
+  min-height: 120px;
+}
+
+.auth-page__empty {
+  color: var(--mat-sys-on-surface-variant);
+  text-align: center;
+  padding: 1.5rem 0.5rem;
+}
+
+.auth-page__note {
+  max-width: 420px;
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--mat-sys-on-surface-variant);
+}

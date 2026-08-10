@@ -1,0 +1,134 @@
+<div class="tasks-page">
+  <header class="tasks-page__header">
+    <div>
+      <h1>Tasks</h1>
+      <p>{{ page().totalElements }} task{{ page().totalElements === 1 ? '' : 's' }}</p>
+    </div>
+    <button mat-flat-button color="primary" (click)="openCreateDialog()">
+      <mat-icon>add</mat-icon>
+      New task
+    </button>
+  </header>
+
+  <mat-card appearance="outlined" class="tasks-page__filters">
+    <mat-form-field appearance="outline" class="tasks-page__search">
+      <mat-label>Search</mat-label>
+      <input matInput [formControl]="searchControl" placeholder="Search title or description" />
+      <mat-icon matPrefix>search</mat-icon>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Status</mat-label>
+      <mat-select [value]="statusFilter()" (selectionChange)="statusFilter.set($event.value)">
+        <mat-option value="ALL">All statuses</mat-option>
+        @for (status of statuses; track status) {
+          <mat-option [value]="status">{{ statusMeta[status].label }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Priority</mat-label>
+      <mat-select [value]="priorityFilter()" (selectionChange)="priorityFilter.set($event.value)">
+        <mat-option value="ALL">All priorities</mat-option>
+        @for (priority of priorities; track priority) {
+          <mat-option [value]="priority">{{ priorityMeta[priority].label }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-slide-toggle [checked]="showArchived()" (change)="showArchived.set($event.checked)">
+      Archived
+    </mat-slide-toggle>
+  </mat-card>
+
+  @if (loading()) {
+    <div class="tasks-page__loading">
+      <mat-progress-spinner diameter="36" mode="indeterminate" />
+    </div>
+  } @else if (page().empty) {
+    <div class="tasks-page__empty">
+      <mat-icon>task_alt</mat-icon>
+      <p>No tasks match these filters.</p>
+      <button mat-stroked-button (click)="openCreateDialog()">Create your first task</button>
+    </div>
+  } @else {
+    <div class="tasks-page__grid">
+      @for (task of page().content; track task.id) {
+        <mat-card appearance="outlined" class="task-card" (click)="openEditDialog(task)">
+          <div class="task-card__top">
+            <mat-checkbox
+              [checked]="task.status === 'COMPLETED'"
+              (click)="toggleComplete(task, $event)"
+              [matTooltip]="task.status === 'COMPLETED' ? 'Reopen task' : 'Mark complete'"
+            />
+            <div class="task-card__title-block">
+              <div class="task-card__title" [class.task-card__title--done]="task.status === 'COMPLETED'">
+                {{ task.title }}
+              </div>
+              @if (task.description) {
+                <div class="task-card__description">{{ task.description }}</div>
+              }
+            </div>
+            <button
+              mat-icon-button
+              [matMenuTriggerFor]="menu"
+              (click)="$event.stopPropagation()"
+              aria-label="Task actions"
+            >
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #menu="matMenu">
+              <button mat-menu-item (click)="openEditDialog(task)">
+                <mat-icon>edit</mat-icon>
+                <span>Edit</span>
+              </button>
+              <button mat-menu-item (click)="deleteTask(task)">
+                <mat-icon>delete</mat-icon>
+                <span>Delete</span>
+              </button>
+            </mat-menu>
+          </div>
+
+          <div class="task-card__meta">
+            <mat-chip-set>
+              <mat-chip [class]="statusMeta[task.status].className" disabled>
+                <mat-icon matChipAvatar>{{ statusMeta[task.status].icon }}</mat-icon>
+                {{ statusMeta[task.status].label }}
+              </mat-chip>
+              <mat-chip [class]="priorityMeta[task.priority].className" disabled>
+                <mat-icon matChipAvatar>{{ priorityMeta[task.priority].icon }}</mat-icon>
+                {{ priorityMeta[task.priority].label }}
+              </mat-chip>
+              @if (task.categoryId && categoryMap().has(task.categoryId)) {
+                <mat-chip disabled>
+                  {{ categoryMap().get(task.categoryId)?.icon }} {{ categoryMap().get(task.categoryId)?.name }}
+                </mat-chip>
+              }
+              @for (tagId of task.tagIds; track tagId) {
+                @if (tagMap().has(tagId)) {
+                  <mat-chip disabled>{{ tagMap().get(tagId)?.name }}</mat-chip>
+                }
+              }
+            </mat-chip-set>
+
+            @if (task.dueDate) {
+              <div class="task-card__due" [class.task-card__due--overdue]="isOverdue(task.dueDate, task.status)">
+                <mat-icon inline>event</mat-icon>
+                {{ task.dueDate | date: 'MMM d, y, h:mm a' }}
+              </div>
+            }
+          </div>
+        </mat-card>
+      }
+    </div>
+
+    <mat-paginator
+      [length]="page().totalElements"
+      [pageIndex]="page().number"
+      [pageSize]="page().size"
+      [pageSizeOptions]="[6, 10, 20, 50]"
+      (page)="onPageChange($event)"
+    />
+  }
+</div>

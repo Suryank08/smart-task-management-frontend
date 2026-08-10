@@ -1,0 +1,48 @@
+<div class="categories-page">
+  <header class="categories-page__header">
+    <div>
+      <h1>Categories</h1>
+      <p>Group your tasks by area of your life.</p>
+    </div>
+    <button mat-flat-button color="primary" (click)="openCreateDialog()">
+      <mat-icon>add</mat-icon>
+      New category
+    </button>
+  </header>
+
+  @if (categoryService.loading()) {
+    <div class="categories-page__loading">
+      <mat-progress-spinner diameter="36" mode="indeterminate" />
+    </div>
+  } @else if (categoryService.categories().length === 0) {
+    <div class="categories-page__empty">
+      <mat-icon>category</mat-icon>
+      <p>No categories yet.</p>
+      <button mat-stroked-button (click)="openCreateDialog()">Create your first category</button>
+    </div>
+  } @else {
+    <div class="categories-page__grid">
+      @for (category of categoryService.categories(); track category.id) {
+        <mat-card appearance="outlined" class="category-card">
+          <div class="category-card__swatch" [style.background]="category.color ?? '#6750a4'">
+            {{ category.icon }}
+          </div>
+          <div class="category-card__name">{{ category.name }}</div>
+          <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Category actions">
+            <mat-icon>more_vert</mat-icon>
+          </button>
+          <mat-menu #menu="matMenu">
+            <button mat-menu-item (click)="openEditDialog(category)">
+              <mat-icon>edit</mat-icon>
+              <span>Edit</span>
+            </button>
+            <button mat-menu-item (click)="deleteCategory(category)">
+              <mat-icon>delete</mat-icon>
+              <span>Delete</span>
+            </button>
+          </mat-menu>
+        </mat-card>
+      }
+    </div>
+  }
+</div>

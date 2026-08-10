@@ -1,0 +1,42 @@
+<div class="tags-page">
+  <header class="tags-page__header">
+    <div>
+      <h1>Tags</h1>
+      <p>Fine-grained labels you can attach to any task.</p>
+    </div>
+    <button mat-flat-button color="primary" (click)="openCreateDialog()">
+      <mat-icon>add</mat-icon>
+      New tag
+    </button>
+  </header>
+
+  @if (tagService.loading()) {
+    <div class="tags-page__loading">
+      <mat-progress-spinner diameter="36" mode="indeterminate" />
+    </div>
+  } @else if (tagService.tags().length === 0) {
+    <div class="tags-page__empty">
+      <mat-icon>sell</mat-icon>
+      <p>No tags yet.</p>
+      <button mat-stroked-button (click)="openCreateDialog()">Create your first tag</button>
+    </div>
+  } @else {
+    <mat-card appearance="outlined" class="tags-page__card">
+      <mat-chip-set>
+        @for (tag of tagService.tags(); track tag.id) {
+          <mat-chip
+            [style.background]="tag.color ?? '#00696d'"
+            [style.color]="'#fff'"
+            (click)="openEditDialog(tag)"
+            (removed)="deleteTag(tag)"
+          >
+            {{ tag.name }}
+            <button matChipRemove aria-label="Delete tag">
+              <mat-icon>cancel</mat-icon>
+            </button>
+          </mat-chip>
+        }
+      </mat-chip-set>
+    </mat-card>
+  }
+</div>

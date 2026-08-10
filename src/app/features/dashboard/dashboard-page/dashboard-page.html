@@ -1,0 +1,79 @@
+<div class="dashboard">
+  <header class="dashboard__header">
+    <div>
+      <h1>Welcome back, {{ auth.currentUser()?.name }}</h1>
+      <p>Here's what's on your plate today.</p>
+    </div>
+    <a mat-flat-button color="primary" routerLink="/tasks">
+      <mat-icon>add</mat-icon>
+      New task
+    </a>
+  </header>
+
+  @if (loading()) {
+    <div class="dashboard__loading">
+      <mat-progress-spinner diameter="36" mode="indeterminate" />
+    </div>
+  } @else {
+    <div class="dashboard__stats">
+      <mat-card appearance="outlined" class="stat-card">
+        <mat-icon class="stat-card__icon">checklist</mat-icon>
+        <div class="stat-card__value">{{ stats().total }}</div>
+        <div class="stat-card__label">Active tasks</div>
+      </mat-card>
+      <mat-card appearance="outlined" class="stat-card">
+        <mat-icon class="stat-card__icon status-pending">schedule</mat-icon>
+        <div class="stat-card__value">{{ stats().pending }}</div>
+        <div class="stat-card__label">Pending</div>
+      </mat-card>
+      <mat-card appearance="outlined" class="stat-card">
+        <mat-icon class="stat-card__icon status-in-progress">autorenew</mat-icon>
+        <div class="stat-card__value">{{ stats().inProgress }}</div>
+        <div class="stat-card__label">In progress</div>
+      </mat-card>
+      <mat-card appearance="outlined" class="stat-card">
+        <mat-icon class="stat-card__icon status-completed">check_circle</mat-icon>
+        <div class="stat-card__value">{{ stats().completed }}</div>
+        <div class="stat-card__label">Completed</div>
+      </mat-card>
+      <mat-card appearance="outlined" class="stat-card stat-card--warn">
+        <mat-icon class="stat-card__icon priority-urgent">warning</mat-icon>
+        <div class="stat-card__value">{{ stats().overdue }}</div>
+        <div class="stat-card__label">Overdue</div>
+      </mat-card>
+    </div>
+
+    <mat-card appearance="outlined" class="dashboard__upcoming">
+      <div class="dashboard__upcoming-header">
+        <h2>Upcoming tasks</h2>
+        <a routerLink="/tasks">View all</a>
+      </div>
+
+      @if (upcomingTasks().length === 0) {
+        <p class="dashboard__empty">Nothing due soon. Enjoy the calm.</p>
+      } @else {
+        <mat-nav-list>
+          @for (task of upcomingTasks(); track task.id) {
+            <a mat-list-item routerLink="/tasks">
+              <mat-icon matListItemIcon [class]="priorityMeta[task.priority].className">
+                {{ priorityMeta[task.priority].icon }}
+              </mat-icon>
+              <span matListItemTitle>{{ task.title }}</span>
+              <span matListItemLine>
+                Due {{ task.dueDate | date: 'MMM d, y, h:mm a' }}
+                @if (isOverdue(task.dueDate, task.status)) {
+                  <span class="dashboard__overdue-tag">Overdue</span>
+                }
+              </span>
+              <mat-chip-set matListItemMeta>
+                <mat-chip [class]="statusMeta[task.status].className" disabled>
+                  {{ statusMeta[task.status].label }}
+                </mat-chip>
+              </mat-chip-set>
+            </a>
+          }
+        </mat-nav-list>
+      }
+    </mat-card>
+  }
+</div>

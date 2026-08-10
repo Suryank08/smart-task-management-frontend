@@ -1,0 +1,57 @@
+.task-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem 1rem;
+  padding-top: 0.25rem;
+}
+
+.task-form__full {
+  grid-column: 1 / -1;
+}
+
+.task-form__divider {
+  margin: 0.5rem 0 1rem;
+}
+
+.subtasks__header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.subtasks__header h3 {
+  margin: 0 0 0.25rem;
+  font: var(--mat-sys-title-small);
+}
+
+.subtasks__count {
+  font-size: 0.8rem;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.subtasks__list {
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.subtasks__title--done {
+  text-decoration: line-through;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.subtasks__add {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-top: 0.25rem;
+}
+
+.subtasks__add-field {
+  flex: 1 1 auto;
+}
+
+@media (max-width: 599px) {
+  .task-form {
+    grid-template-columns: 1fr;
+  }
+}

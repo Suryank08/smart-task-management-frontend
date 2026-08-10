@@ -1,0 +1,30 @@
+.tag-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding-top: 0.25rem;
+  min-width: 300px;
+}
+
+.tag-form__full {
+  width: 100%;
+}
+
+.tag-form__color-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.tag-form__color-row input[type='color'] {
+  width: 40px;
+  height: 32px;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.tag-form__color-value {
+  font-size: 0.85rem;
+  color: var(--mat-sys-on-surface-variant);
+}

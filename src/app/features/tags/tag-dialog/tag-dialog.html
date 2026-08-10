@@ -1,0 +1,30 @@
+<h2 mat-dialog-title>{{ isEditMode ? 'Edit tag' : 'New tag' }}</h2>
+
+<mat-dialog-content>
+  <form class="tag-form" [formGroup]="form">
+    <mat-form-field appearance="outline" class="tag-form__full">
+      <mat-label>Name</mat-label>
+      <input matInput formControlName="name" />
+      @if (form.controls.name.hasError('required')) {
+        <mat-error>Name is required</mat-error>
+      }
+    </mat-form-field>
+
+    <div class="tag-form__color-row">
+      <label for="tag-color">Color</label>
+      <input id="tag-color" type="color" formControlName="color" />
+      <span class="tag-form__color-value">{{ form.controls.color.value }}</span>
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button [mat-dialog-close]="false" [disabled]="saving()">Cancel</button>
+  <button mat-flat-button color="primary" (click)="submit()" [disabled]="saving()">
+    @if (saving()) {
+      <mat-progress-spinner diameter="18" mode="indeterminate" />
+    } @else {
+      <span>{{ isEditMode ? 'Save changes' : 'Create tag' }}</span>
+    }
+  </button>
+</mat-dialog-actions>

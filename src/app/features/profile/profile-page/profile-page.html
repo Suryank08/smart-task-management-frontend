@@ -1,0 +1,71 @@
+<div class="profile-page">
+  <header class="profile-page__header">
+    <h1>Profile &amp; settings</h1>
+    <p>Manage your account and personalize the app.</p>
+  </header>
+
+  <mat-card appearance="outlined" class="profile-page__card">
+    <h2>Account details</h2>
+    <form class="profile-form" [formGroup]="form" (ngSubmit)="submit()">
+      <mat-form-field appearance="outline" class="profile-form__full">
+        <mat-label>Full name</mat-label>
+        <input matInput formControlName="name" />
+        @if (form.controls.name.hasError('required')) {
+          <mat-error>Name is required</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="profile-form__full">
+        <mat-label>Email</mat-label>
+        <input matInput [value]="auth.currentUser()?.email" disabled />
+        <mat-hint>Email can't be changed yet</mat-hint>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="profile-form__full">
+        <mat-label>Avatar URL</mat-label>
+        <input matInput formControlName="avatarUrl" placeholder="https://…" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="profile-form__full">
+        <mat-label>Timezone</mat-label>
+        <input matInput formControlName="timezone" />
+      </mat-form-field>
+
+      <button mat-flat-button color="primary" type="submit" [disabled]="saving()">
+        @if (saving()) {
+          <mat-progress-spinner diameter="18" mode="indeterminate" />
+        } @else {
+          <span>Save changes</span>
+        }
+      </button>
+    </form>
+  </mat-card>
+
+  <mat-card appearance="outlined" class="profile-page__card">
+    <h2>Appearance</h2>
+    <p class="profile-page__hint">Choose how TaskFlow looks on this device.</p>
+    <mat-button-toggle-group
+      [value]="theme.mode()"
+      (change)="theme.setMode($event.value)"
+      aria-label="Theme mode"
+    >
+      <mat-button-toggle value="light">
+        <mat-icon>light_mode</mat-icon>
+        Light
+      </mat-button-toggle>
+      <mat-button-toggle value="dark">
+        <mat-icon>dark_mode</mat-icon>
+        Dark
+      </mat-button-toggle>
+    </mat-button-toggle-group>
+  </mat-card>
+
+  <mat-card appearance="outlined" class="profile-page__card profile-page__danger">
+    <h2>Session</h2>
+    <p class="profile-page__hint">Sign out of TaskFlow on this device.</p>
+    <button mat-stroked-button color="warn" (click)="signOut()">
+      <mat-icon>logout</mat-icon>
+      Sign out
+    </button>
+  </mat-card>
+</div>

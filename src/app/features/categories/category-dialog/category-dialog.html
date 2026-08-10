@@ -1,0 +1,43 @@
+<h2 mat-dialog-title>{{ isEditMode ? 'Edit category' : 'New category' }}</h2>
+
+<mat-dialog-content>
+  <form class="category-form" [formGroup]="form">
+    <mat-form-field appearance="outline" class="category-form__full">
+      <mat-label>Name</mat-label>
+      <input matInput formControlName="name" />
+      @if (form.controls.name.hasError('required')) {
+        <mat-error>Name is required</mat-error>
+      }
+    </mat-form-field>
+
+    <div class="category-form__icons">
+      @for (icon of iconOptions; track icon) {
+        <button
+          type="button"
+          class="category-form__icon-btn"
+          [class.category-form__icon-btn--selected]="form.controls.icon.value === icon"
+          (click)="form.controls.icon.setValue(icon)"
+        >
+          {{ icon }}
+        </button>
+      }
+    </div>
+
+    <div class="category-form__color-row">
+      <label for="category-color">Color</label>
+      <input id="category-color" type="color" formControlName="color" />
+      <span class="category-form__color-value">{{ form.controls.color.value }}</span>
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button [mat-dialog-close]="false" [disabled]="saving()">Cancel</button>
+  <button mat-flat-button color="primary" (click)="submit()" [disabled]="saving()">
+    @if (saving()) {
+      <mat-progress-spinner diameter="18" mode="indeterminate" />
+    } @else {
+      <span>{{ isEditMode ? 'Save changes' : 'Create category' }}</span>
+    }
+  </button>
+</mat-dialog-actions>

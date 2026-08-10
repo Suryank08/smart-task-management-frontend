@@ -1,0 +1,50 @@
+.profile-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  max-width: 560px;
+}
+
+.profile-page__header h1 {
+  margin: 0 0 0.25rem;
+  font: var(--mat-sys-headline-medium);
+}
+
+.profile-page__header p {
+  margin: 0;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.profile-page__card {
+  padding: 1.25rem 1.5rem 1.5rem;
+}
+
+.profile-page__card h2 {
+  font: var(--mat-sys-title-medium);
+  margin: 0 0 0.75rem;
+}
+
+.profile-page__hint {
+  color: var(--mat-sys-on-surface-variant);
+  margin: 0 0 1rem;
+  font-size: 0.875rem;
+}
+
+.profile-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.profile-form__full {
+  width: 100%;
+}
+
+.profile-form button[type='submit'] {
+  align-self: flex-start;
+  margin-top: 0.5rem;
+}
+
+.profile-page__danger button mat-icon {
+  margin-right: 0.25rem;
+}

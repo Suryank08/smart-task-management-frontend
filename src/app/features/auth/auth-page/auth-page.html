@@ -1,0 +1,96 @@
+<div class="auth-page">
+  <button
+    mat-icon-button
+    class="auth-page__theme-toggle"
+    (click)="theme.toggle()"
+    [attr.aria-label]="theme.mode() === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'"
+  >
+    <mat-icon>{{ theme.mode() === 'dark' ? 'light_mode' : 'dark_mode' }}</mat-icon>
+  </button>
+
+  <mat-card class="auth-page__card" appearance="outlined">
+    <div class="auth-page__brand">
+      <mat-icon aria-hidden="true">bolt</mat-icon>
+      <span>TaskFlow</span>
+    </div>
+    <p class="auth-page__subtitle">Plan your day. Track what matters.</p>
+
+    <mat-tab-group mat-stretch-tabs="true" animationDuration="150ms">
+      <mat-tab label="Create account">
+        <form class="auth-page__form" [formGroup]="signUpForm" (ngSubmit)="submitSignUp()">
+          <mat-form-field appearance="outline">
+            <mat-label>Full name</mat-label>
+            <input matInput formControlName="name" autocomplete="name" />
+            @if (signUpForm.controls.name.hasError('required')) {
+              <mat-error>Name is required</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Email</mat-label>
+            <input matInput type="email" formControlName="email" autocomplete="email" />
+            @if (signUpForm.controls.email.hasError('required')) {
+              <mat-error>Email is required</mat-error>
+            } @else if (signUpForm.controls.email.hasError('email')) {
+              <mat-error>Enter a valid email</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Password</mat-label>
+            <input matInput type="password" formControlName="password" autocomplete="new-password" />
+            @if (signUpForm.controls.password.hasError('required')) {
+              <mat-error>Password is required</mat-error>
+            } @else if (signUpForm.controls.password.hasError('minlength')) {
+              <mat-error>At least 8 characters</mat-error>
+            }
+          </mat-form-field>
+
+          <button mat-flat-button color="primary" type="submit" [disabled]="submitting()">
+            @if (submitting()) {
+              <mat-progress-spinner diameter="20" mode="indeterminate" />
+            } @else {
+              <span>Create account &amp; get started</span>
+            }
+          </button>
+        </form>
+      </mat-tab>
+
+      <mat-tab label="Continue on this device">
+        <div class="auth-page__accounts">
+          @if (knownAccounts().length === 0) {
+            <p class="auth-page__empty">
+              No accounts remembered on this device yet. Create one from the other tab.
+            </p>
+          } @else {
+            <mat-nav-list>
+              @for (account of knownAccounts(); track account.id) {
+                <a mat-list-item (click)="continueAs(account.id)">
+                  <mat-icon matListItemIcon>account_circle</mat-icon>
+                  <span matListItemTitle>{{ account.name }}</span>
+                  <span matListItemLine>{{ account.email }}</span>
+                  @if (continuingId() === account.id) {
+                    <mat-progress-spinner diameter="18" mode="indeterminate" />
+                  } @else {
+                    <button
+                      mat-icon-button
+                      matListItemMeta
+                      (click)="forgetAccount($event, account.id)"
+                      aria-label="Forget this account"
+                    >
+                      <mat-icon>close</mat-icon>
+                    </button>
+                  }
+                </a>
+              }
+            </mat-nav-list>
+          }
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+  </mat-card>
+
+  <p class="auth-page__note">
+    This app stores your account id on this device only — there's no password login yet.
+  </p>
+</div>

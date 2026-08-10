@@ -1,1 +1,31 @@
 /* You can add global styles to this file, and also import other style files */
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+/* Status / priority accent colors, shared across dashboard, task cards and chips. */
+.status-pending { color: #f0ad4e; }
+.status-in-progress { color: #4f8ef7; }
+.status-completed { color: #2fb380; }
+.status-cancelled { color: #9aa0a6; }
+
+.priority-low { color: #7aa2f7; }
+.priority-medium { color: #f0ad4e; }
+.priority-high { color: #f2724b; }
+.priority-urgent { color: #e5484d; }
+
+mat-chip.status-pending, mat-chip.status-in-progress, mat-chip.status-completed, mat-chip.status-cancelled,
+mat-chip.priority-low, mat-chip.priority-medium, mat-chip.priority-high, mat-chip.priority-urgent {
+  --mat-chip-disabled-container-opacity: 1;
+  color: inherit;
+}
+
+.notify-success {
+  --mdc-snackbar-container-color: #2fb380;
+  --mdc-snackbar-supporting-text-color: #ffffff;
+}
+
+.notify-error {
+  --mdc-snackbar-container-color: #e5484d;
+  --mdc-snackbar-supporting-text-color: #ffffff;
+}
