@@ -1,4 +1,7 @@
-<h2 mat-dialog-title>{{ isEditMode ? 'Edit task' : 'New task' }}</h2>
+<h2 mat-dialog-title class="tms-dialog-title">
+  <span class="tms-dialog-title__icon"><mat-icon>task_alt</mat-icon></span>
+  {{ isEditMode ? 'Edit task' : 'New task' }}
+</h2>
 
 <mat-dialog-content>
   <form class="task-form" [formGroup]="form">

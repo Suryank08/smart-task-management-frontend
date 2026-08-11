@@ -1,4 +1,7 @@
-<h2 mat-dialog-title>{{ isEditMode ? 'Edit category' : 'New category' }}</h2>
+<h2 mat-dialog-title class="tms-dialog-title">
+  <span class="tms-dialog-title__icon"><mat-icon>category</mat-icon></span>
+  {{ isEditMode ? 'Edit category' : 'New category' }}
+</h2>
 
 <mat-dialog-content>
   <form class="category-form" [formGroup]="form">
@@ -27,6 +30,19 @@
       <label for="category-color">Color</label>
       <input id="category-color" type="color" formControlName="color" />
       <span class="category-form__color-value">{{ form.controls.color.value }}</span>
+    </div>
+
+    <div class="category-form__swatches">
+      @for (color of colorPresets; track color) {
+        <button
+          type="button"
+          class="category-form__swatch"
+          [class.category-form__swatch--selected]="form.controls.color.value === color"
+          [style.background]="color"
+          (click)="form.controls.color.setValue(color)"
+          [attr.aria-label]="'Use color ' + color"
+        ></button>
+      }
     </div>
   </form>
 </mat-dialog-content>

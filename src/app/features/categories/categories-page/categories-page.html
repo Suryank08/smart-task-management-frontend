@@ -1,10 +1,10 @@
 <div class="categories-page">
-  <header class="categories-page__header">
+  <header class="page-header">
     <div>
-      <h1>Categories</h1>
-      <p>Group your tasks by area of your life.</p>
+      <h1 class="page-header__title">Categories</h1>
+      <p class="page-header__subtitle">Group your tasks by area of your life.</p>
     </div>
-    <button mat-flat-button color="primary" (click)="openCreateDialog()">
+    <button mat-flat-button color="primary" class="page-header__action" (click)="openCreateDialog()">
       <mat-icon>add</mat-icon>
       New category
     </button>
@@ -23,12 +23,25 @@
   } @else {
     <div class="categories-page__grid">
       @for (category of categoryService.categories(); track category.id) {
-        <mat-card appearance="outlined" class="category-card">
+        <mat-card
+          class="category-card"
+          [style.--category-color]="category.color ?? '#6750a4'"
+          (click)="openEditDialog(category)"
+        >
           <div class="category-card__swatch" [style.background]="category.color ?? '#6750a4'">
             {{ category.icon }}
           </div>
-          <div class="category-card__name">{{ category.name }}</div>
-          <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Category actions">
+          <div class="category-card__text">
+            <div class="category-card__name">{{ category.name }}</div>
+            @let count = categoryTaskCounts().get(category.id) ?? 0;
+            <div class="category-card__count">{{ count }} task{{ count === 1 ? '' : 's' }}</div>
+          </div>
+          <button
+            mat-icon-button
+            [matMenuTriggerFor]="menu"
+            (click)="$event.stopPropagation()"
+            aria-label="Category actions"
+          >
             <mat-icon>more_vert</mat-icon>
           </button>
           <mat-menu #menu="matMenu">

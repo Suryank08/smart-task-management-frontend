@@ -8,10 +8,10 @@ export const STATUS_META: Record<TaskStatus, { label: string; icon: string; clas
 };
 
 export const PRIORITY_META: Record<TaskPriority, { label: string; icon: string; className: string }> = {
-  LOW: { label: 'Low', icon: 'south', className: 'priority-low' },
-  MEDIUM: { label: 'Medium', icon: 'drag_handle', className: 'priority-medium' },
-  HIGH: { label: 'High', icon: 'north', className: 'priority-high' },
-  URGENT: { label: 'Urgent', icon: 'priority_high', className: 'priority-urgent' },
+  LOW: { label: 'Low', icon: 'keyboard_double_arrow_down', className: 'priority-low' },
+  MEDIUM: { label: 'Medium', icon: 'trending_flat', className: 'priority-medium' },
+  HIGH: { label: 'High', icon: 'keyboard_double_arrow_up', className: 'priority-high' },
+  URGENT: { label: 'Urgent', icon: 'error', className: 'priority-urgent' },
 };
 
 export function isOverdue(dueDate: string | null, status: TaskStatus): boolean {

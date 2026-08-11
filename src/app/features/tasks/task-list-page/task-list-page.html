@@ -1,16 +1,16 @@
 <div class="tasks-page">
-  <header class="tasks-page__header">
+  <header class="page-header">
     <div>
-      <h1>Tasks</h1>
-      <p>{{ page().totalElements }} task{{ page().totalElements === 1 ? '' : 's' }}</p>
+      <h1 class="page-header__title">Tasks</h1>
+      <p class="page-header__subtitle">{{ page().totalElements }} task{{ page().totalElements === 1 ? '' : 's' }}</p>
     </div>
-    <button mat-flat-button color="primary" (click)="openCreateDialog()">
+    <button mat-flat-button color="primary" class="page-header__action" (click)="openCreateDialog()">
       <mat-icon>add</mat-icon>
       New task
     </button>
   </header>
 
-  <mat-card appearance="outlined" class="tasks-page__filters">
+  <mat-card class="tasks-page__filters">
     <mat-form-field appearance="outline" class="tasks-page__search">
       <mat-label>Search</mat-label>
       <input matInput [formControl]="searchControl" placeholder="Search title or description" />
@@ -55,7 +55,7 @@
   } @else {
     <div class="tasks-page__grid">
       @for (task of page().content; track task.id) {
-        <mat-card appearance="outlined" class="task-card" (click)="openEditDialog(task)">
+        <mat-card class="task-card" [class]="priorityMeta[task.priority].className" (click)="openEditDialog(task)">
           <div class="task-card__top">
             <mat-checkbox
               [checked]="task.status === 'COMPLETED'"
@@ -101,13 +101,23 @@
                 {{ priorityMeta[task.priority].label }}
               </mat-chip>
               @if (task.categoryId && categoryMap().has(task.categoryId)) {
-                <mat-chip disabled>
+                <mat-chip
+                  class="task-card__tint-chip"
+                  [style.--chip-color]="categoryMap().get(task.categoryId)?.color ?? '#6750a4'"
+                  disabled
+                >
                   {{ categoryMap().get(task.categoryId)?.icon }} {{ categoryMap().get(task.categoryId)?.name }}
                 </mat-chip>
               }
               @for (tagId of task.tagIds; track tagId) {
                 @if (tagMap().has(tagId)) {
-                  <mat-chip disabled>{{ tagMap().get(tagId)?.name }}</mat-chip>
+                  <mat-chip
+                    class="task-card__tint-chip"
+                    [style.--chip-color]="tagMap().get(tagId)?.color ?? '#00696d'"
+                    disabled
+                  >
+                    {{ tagMap().get(tagId)?.name }}
+                  </mat-chip>
                 }
               }
             </mat-chip-set>

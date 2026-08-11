@@ -1,17 +1,19 @@
 <div class="profile-page">
-  <header class="profile-page__header">
-    <h1>Profile &amp; settings</h1>
-    <p>Manage your account and personalize the app.</p>
+  <header class="page-header">
+    <div>
+      <h1 class="page-header__title">Profile &amp; settings</h1>
+      <p class="page-header__subtitle">Manage your account and personalize the app.</p>
+    </div>
   </header>
 
-  <mat-card appearance="outlined" class="profile-page__card">
-    <h2>Account details</h2>
+  <mat-card class="profile-page__card">
+    <h2><mat-icon>badge</mat-icon>Account details</h2>
     <form class="profile-form" [formGroup]="form" (ngSubmit)="submit()">
       <mat-form-field appearance="outline" class="profile-form__full">
         <mat-label>Full name</mat-label>
         <input matInput formControlName="name" />
         @if (form.controls.name.hasError('required')) {
-          <mat-error>Name is required</mat-error>
+        <mat-error>Name is required</mat-error>
         }
       </mat-form-field>
 
@@ -33,22 +35,19 @@
 
       <button mat-flat-button color="primary" type="submit" [disabled]="saving()">
         @if (saving()) {
-          <mat-progress-spinner diameter="18" mode="indeterminate" />
+        <mat-progress-spinner diameter="18" mode="indeterminate" />
         } @else {
-          <span>Save changes</span>
+        <span>Save changes</span>
         }
       </button>
     </form>
   </mat-card>
 
-  <mat-card appearance="outlined" class="profile-page__card">
-    <h2>Appearance</h2>
-    <p class="profile-page__hint">Choose how TaskFlow looks on this device.</p>
-    <mat-button-toggle-group
-      [value]="theme.mode()"
-      (change)="theme.setMode($event.value)"
-      aria-label="Theme mode"
-    >
+  <mat-card class="profile-page__card">
+    <h2><mat-icon>palette</mat-icon>Appearance</h2>
+    <p class="profile-page__hint">Choose how Do IT looks on this device.</p>
+    <mat-button-toggle-group class="profile-page__theme-toggle" [value]="theme.mode()"
+      (change)="theme.setMode($event.value)" aria-label="Theme mode">
       <mat-button-toggle value="light">
         <mat-icon>light_mode</mat-icon>
         Light
@@ -60,9 +59,9 @@
     </mat-button-toggle-group>
   </mat-card>
 
-  <mat-card appearance="outlined" class="profile-page__card profile-page__danger">
-    <h2>Session</h2>
-    <p class="profile-page__hint">Sign out of TaskFlow on this device.</p>
+  <mat-card class="profile-page__card profile-page__danger">
+    <h2><mat-icon>logout</mat-icon>Session</h2>
+    <p class="profile-page__hint">Sign out of Do IT on this device.</p>
     <button mat-stroked-button color="warn" (click)="signOut()">
       <mat-icon>logout</mat-icon>
       Sign out

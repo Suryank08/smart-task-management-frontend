@@ -1,23 +1,186 @@
 /* You can add global styles to this file, and also import other style files */
 
-html, body { height: 100%; }
+*, *::before, *::after { box-sizing: border-box; }
+html, body { height: 100%; overflow-x: hidden; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
+:root {
+  --tms-status-pending: #f5a524;
+  --tms-status-in-progress: #3b82f6;
+  --tms-status-completed: #16a34a;
+  --tms-status-cancelled: #6b7280;
+  --tms-priority-low: #38bdf8;
+  --tms-priority-medium: #f5a524;
+  --tms-priority-high: #fb7185;
+  --tms-priority-urgent: #ef4444;
+}
+
 /* Status / priority accent colors, shared across dashboard, task cards and chips. */
-.status-pending { color: #f0ad4e; }
-.status-in-progress { color: #4f8ef7; }
-.status-completed { color: #2fb380; }
-.status-cancelled { color: #9aa0a6; }
+.status-pending { color: var(--tms-status-pending); }
+.status-in-progress { color: var(--tms-status-in-progress); }
+.status-completed { color: var(--tms-status-completed); }
+.status-cancelled { color: var(--tms-status-cancelled); }
 
-.priority-low { color: #7aa2f7; }
-.priority-medium { color: #f0ad4e; }
-.priority-high { color: #f2724b; }
-.priority-urgent { color: #e5484d; }
+.priority-low { color: var(--tms-priority-low); }
+.priority-medium { color: var(--tms-priority-medium); }
+.priority-high { color: var(--tms-priority-high); }
+.priority-urgent { color: var(--tms-priority-urgent); }
 
+/* Tonal badge treatment for status/priority mat-chips: tinted background + saturated
+   text/icon + matching border, so chips read as colorful pills instead of plain outlines.
+   Color is set directly per class (not `inherit`) and mirrored onto Material's own
+   disabled-state tokens, since these chips are all rendered with [disabled] and Material's
+   higher-specificity disabled label/icon/outline tokens would otherwise wash the color out
+   — the leading mat-icon (matChipAvatar) specifically reads its own separate
+   --mat-chip-with-icon-disabled-icon-color token, not the label text color. */
 mat-chip.status-pending, mat-chip.status-in-progress, mat-chip.status-completed, mat-chip.status-cancelled,
 mat-chip.priority-low, mat-chip.priority-medium, mat-chip.priority-high, mat-chip.priority-urgent {
   --mat-chip-disabled-container-opacity: 1;
-  color: inherit;
+  font-weight: 600;
+  border-radius: 999px;
+}
+
+mat-chip.status-pending {
+  --mat-chip-disabled-label-text-color: var(--tms-status-pending);
+  --mat-chip-disabled-outline-color: color-mix(in srgb, var(--tms-status-pending) 40%, transparent);
+  --mat-chip-with-icon-icon-color: var(--tms-status-pending);
+  --mat-chip-with-icon-disabled-icon-color: var(--tms-status-pending);
+  background: color-mix(in srgb, var(--tms-status-pending) 18%, transparent);
+  border: 1px solid color-mix(in srgb, var(--tms-status-pending) 40%, transparent);
+  color: var(--tms-status-pending);
+}
+mat-chip.status-in-progress {
+  --mat-chip-disabled-label-text-color: var(--tms-status-in-progress);
+  --mat-chip-disabled-outline-color: color-mix(in srgb, var(--tms-status-in-progress) 40%, transparent);
+  --mat-chip-with-icon-icon-color: var(--tms-status-in-progress);
+  --mat-chip-with-icon-disabled-icon-color: var(--tms-status-in-progress);
+  background: color-mix(in srgb, var(--tms-status-in-progress) 18%, transparent);
+  border: 1px solid color-mix(in srgb, var(--tms-status-in-progress) 40%, transparent);
+  color: var(--tms-status-in-progress);
+}
+mat-chip.status-completed {
+  --mat-chip-disabled-label-text-color: var(--tms-status-completed);
+  --mat-chip-disabled-outline-color: color-mix(in srgb, var(--tms-status-completed) 40%, transparent);
+  --mat-chip-with-icon-icon-color: var(--tms-status-completed);
+  --mat-chip-with-icon-disabled-icon-color: var(--tms-status-completed);
+  background: color-mix(in srgb, var(--tms-status-completed) 18%, transparent);
+  border: 1px solid color-mix(in srgb, var(--tms-status-completed) 40%, transparent);
+  color: var(--tms-status-completed);
+}
+mat-chip.status-cancelled {
+  --mat-chip-disabled-label-text-color: var(--tms-status-cancelled);
+  --mat-chip-disabled-outline-color: color-mix(in srgb, var(--tms-status-cancelled) 40%, transparent);
+  --mat-chip-with-icon-icon-color: var(--tms-status-cancelled);
+  --mat-chip-with-icon-disabled-icon-color: var(--tms-status-cancelled);
+  background: color-mix(in srgb, var(--tms-status-cancelled) 18%, transparent);
+  border: 1px solid color-mix(in srgb, var(--tms-status-cancelled) 40%, transparent);
+  color: var(--tms-status-cancelled);
+}
+mat-chip.priority-low {
+  --mat-chip-disabled-label-text-color: var(--tms-priority-low);
+  --mat-chip-disabled-outline-color: color-mix(in srgb, var(--tms-priority-low) 40%, transparent);
+  --mat-chip-with-icon-icon-color: var(--tms-priority-low);
+  --mat-chip-with-icon-disabled-icon-color: var(--tms-priority-low);
+  background: color-mix(in srgb, var(--tms-priority-low) 18%, transparent);
+  border: 1px solid color-mix(in srgb, var(--tms-priority-low) 40%, transparent);
+  color: var(--tms-priority-low);
+}
+mat-chip.priority-medium {
+  --mat-chip-disabled-label-text-color: var(--tms-priority-medium);
+  --mat-chip-disabled-outline-color: color-mix(in srgb, var(--tms-priority-medium) 40%, transparent);
+  --mat-chip-with-icon-icon-color: var(--tms-priority-medium);
+  --mat-chip-with-icon-disabled-icon-color: var(--tms-priority-medium);
+  background: color-mix(in srgb, var(--tms-priority-medium) 18%, transparent);
+  border: 1px solid color-mix(in srgb, var(--tms-priority-medium) 40%, transparent);
+  color: var(--tms-priority-medium);
+}
+mat-chip.priority-high {
+  --mat-chip-disabled-label-text-color: var(--tms-priority-high);
+  --mat-chip-disabled-outline-color: color-mix(in srgb, var(--tms-priority-high) 40%, transparent);
+  --mat-chip-with-icon-icon-color: var(--tms-priority-high);
+  --mat-chip-with-icon-disabled-icon-color: var(--tms-priority-high);
+  background: color-mix(in srgb, var(--tms-priority-high) 18%, transparent);
+  border: 1px solid color-mix(in srgb, var(--tms-priority-high) 40%, transparent);
+  color: var(--tms-priority-high);
+}
+mat-chip.priority-urgent {
+  --mat-chip-disabled-label-text-color: var(--tms-priority-urgent);
+  --mat-chip-disabled-outline-color: color-mix(in srgb, var(--tms-priority-urgent) 40%, transparent);
+  --mat-chip-with-icon-icon-color: var(--tms-priority-urgent);
+  --mat-chip-with-icon-disabled-icon-color: var(--tms-priority-urgent);
+  background: color-mix(in srgb, var(--tms-priority-urgent) 18%, transparent);
+  border: 1px solid color-mix(in srgb, var(--tms-priority-urgent) 40%, transparent);
+  color: var(--tms-priority-urgent);
+}
+
+/* Reusable page header: icon/title/subtitle + trailing action, used by every feature page. */
+.page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.page-header__title {
+  margin: 0 0 0.25rem;
+  font: var(--mat-sys-headline-medium);
+  font-size: clamp(1.35rem, 1.05rem + 1.1vw, 1.75rem);
+}
+
+.page-header__subtitle {
+  margin: 0;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.page-header__action {
+  flex-shrink: 0;
+}
+
+@media (max-width: 599px) {
+  .page-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .page-header__action {
+    width: 100%;
+  }
+
+  .page-header__action a,
+  .page-header__action button {
+    width: 100%;
+  }
+}
+
+/* Shared icon-badge dialog title treatment, used by every mat-dialog in the app. */
+.tms-dialog-title {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.tms-dialog-title__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: var(--tms-radius-sm);
+  background: color-mix(in srgb, var(--mat-sys-primary) 16%, transparent);
+  color: var(--mat-sys-primary);
+  flex-shrink: 0;
+}
+
+.tms-dialog-title__icon mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+.tms-dialog-title__icon--warn {
+  background: color-mix(in srgb, var(--mat-sys-error) 16%, transparent);
+  color: var(--mat-sys-error);
 }
 
 .notify-success {

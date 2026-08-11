@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog } from '@angular/material/dialog';
@@ -9,6 +9,7 @@ import { firstValueFrom } from 'rxjs';
 import { CategoryDto } from '../../../core/models/category.model';
 import { CategoryService } from '../../../core/services/category.service';
 import { NotifyService } from '../../../core/services/notify.service';
+import { TaskService } from '../../../core/services/task.service';
 import { ConfirmDialog } from '../../../shared/confirm-dialog/confirm-dialog';
 import { CategoryDialog } from '../category-dialog/category-dialog';
 
@@ -20,19 +21,30 @@ import { CategoryDialog } from '../category-dialog/category-dialog';
 })
 export class CategoriesPage {
   protected readonly categoryService = inject(CategoryService);
+  private readonly taskService = inject(TaskService);
   private readonly dialog = inject(MatDialog);
   private readonly notify = inject(NotifyService);
 
+  protected readonly categoryTaskCounts = computed(() => {
+    const counts = new Map<string, number>();
+    for (const task of this.taskService.allTasks()) {
+      if (task.status === 'CANCELLED' || !task.categoryId) continue;
+      counts.set(task.categoryId, (counts.get(task.categoryId) ?? 0) + 1);
+    }
+    return counts;
+  });
+
   constructor() {
     void this.categoryService.load();
+    void this.taskService.loadAllForSummary();
   }
 
   openCreateDialog(): void {
-    this.dialog.open(CategoryDialog, { width: '420px', data: { category: null } });
+    this.dialog.open(CategoryDialog, { width: '420px', maxWidth: '95vw', data: { category: null } });
   }
 
   openEditDialog(category: CategoryDto): void {
-    this.dialog.open(CategoryDialog, { width: '420px', data: { category } });
+    this.dialog.open(CategoryDialog, { width: '420px', maxWidth: '95vw', data: { category } });
   }
 
   async deleteCategory(category: CategoryDto): Promise<void> {

@@ -22,6 +22,16 @@ export interface UserCreateRequest {
   timezone?: string | null;
 }
 
+export interface LoginRequest {
+  email: string;
+  password: string;
+}
+
+export interface AuthResponse {
+  token: string;
+  user: UserDto;
+}
+
 export interface UserUpdateRequest {
   name: string;
   avatarUrl?: string | null;

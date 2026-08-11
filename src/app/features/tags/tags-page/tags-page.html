@@ -1,10 +1,10 @@
 <div class="tags-page">
-  <header class="tags-page__header">
+  <header class="page-header">
     <div>
-      <h1>Tags</h1>
-      <p>Fine-grained labels you can attach to any task.</p>
+      <h1 class="page-header__title">Tags</h1>
+      <p class="page-header__subtitle">Fine-grained labels you can attach to any task.</p>
     </div>
-    <button mat-flat-button color="primary" (click)="openCreateDialog()">
+    <button mat-flat-button color="primary" class="page-header__action" (click)="openCreateDialog()">
       <mat-icon>add</mat-icon>
       New tag
     </button>
@@ -21,17 +21,21 @@
       <button mat-stroked-button (click)="openCreateDialog()">Create your first tag</button>
     </div>
   } @else {
-    <mat-card appearance="outlined" class="tags-page__card">
+    <mat-card class="tags-page__card">
       <mat-chip-set>
         @for (tag of tagService.tags(); track tag.id) {
           <mat-chip
             [style.background]="tag.color ?? '#00696d'"
-            [style.color]="'#fff'"
+            [style.color]="getContrastTextColor(tag.color)"
+            [style.--mat-chip-with-trailing-icon-trailing-icon-color]="getContrastTextColor(tag.color)"
             (click)="openEditDialog(tag)"
             (removed)="deleteTag(tag)"
           >
             {{ tag.name }}
-            <button matChipRemove aria-label="Delete tag">
+            @if (tagTaskCounts().get(tag.id); as count) {
+              <span class="tags-page__chip-count">{{ count }}</span>
+            }
+            <button matChipRemove [attr.aria-label]="'Delete ' + tag.name">
               <mat-icon>cancel</mat-icon>
             </button>
           </mat-chip>
