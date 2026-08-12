@@ -1,4 +1,4 @@
-import { DatePipe } from '@angular/common';
+import { DatePipe, NgTemplateOutlet } from '@angular/common';
 import { Component, computed, effect, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
@@ -23,7 +23,7 @@ import { TagService } from '../../../core/services/tag.service';
 import { TaskService } from '../../../core/services/task.service';
 import { TASK_PRIORITIES, TASK_STATUSES, TaskDto, TaskFilter, TaskPriority, TaskStatus } from '../../../core/models/task.model';
 import { ConfirmDialog } from '../../../shared/confirm-dialog/confirm-dialog';
-import { PRIORITY_META, STATUS_META, isOverdue } from '../../../shared/task-display.util';
+import { PRIORITY_META, STATUS_META, dueBucket, isOverdue } from '../../../shared/task-display.util';
 import { TaskFormDialog } from '../task-form-dialog/task-form-dialog';
 
 @Component({
@@ -31,6 +31,7 @@ import { TaskFormDialog } from '../task-form-dialog/task-form-dialog';
   imports: [
     ReactiveFormsModule,
     DatePipe,
+    NgTemplateOutlet,
     MatCardModule,
     MatButtonModule,
     MatIconModule,
@@ -75,6 +76,33 @@ export class TaskListPage {
     () => new Map(this.categories().map((c) => [c.id, c])),
   );
   protected readonly tagMap = computed(() => new Map(this.tags().map((t) => [t.id, t])));
+
+  // Grouped by due date within the current (server-paginated, dueDate-asc-sorted) page only —
+  // a natural grouping could in principle straddle two pages, an accepted trade-off for not
+  // needing a dedicated backend endpoint just for this client-side grouping.
+  protected readonly todayTasks = computed(() =>
+    this.page().content.filter((t) => {
+      const bucket = dueBucket(t.dueDate);
+      return bucket === 'today' || bucket === 'overdue';
+    }),
+  );
+  protected readonly upcomingTasks = computed(() =>
+    this.page().content.filter((t) => dueBucket(t.dueDate) === 'upcoming'),
+  );
+  protected readonly noDueDateTasks = computed(() =>
+    this.page().content.filter((t) => dueBucket(t.dueDate) === null),
+  );
+
+  // ngTemplateOutlet's `let-task` context isn't statically typed (no ngTemplateContextGuard
+  // like *ngFor has), so `task` is `any` inside the shared #taskCard template — these give
+  // strict-mode-safe lookups in place of indexing PRIORITY_META/STATUS_META directly there.
+  protected priorityMetaFor(priority: TaskPriority) {
+    return PRIORITY_META[priority];
+  }
+
+  protected statusMetaFor(status: TaskStatus) {
+    return STATUS_META[status];
+  }
 
   private readonly debouncedSearch = toSignal(
     this.searchControl.valueChanges.pipe(debounceTime(350), startWith('')),

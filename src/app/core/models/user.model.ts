@@ -32,6 +32,10 @@ export interface AuthResponse {
   user: UserDto;
 }
 
+export interface ForgotPasswordRequest {
+  email: string;
+}
+
 export interface UserUpdateRequest {
   name: string;
   avatarUrl?: string | null;

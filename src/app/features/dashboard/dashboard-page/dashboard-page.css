@@ -145,6 +145,22 @@
 
 .dashboard__upcoming mat-list-item {
   border-radius: var(--tms-radius-sm);
+  padding: 0.35rem 0.5rem;
+  margin-bottom: 0.2rem;
+}
+
+.dashboard__upcoming mat-list-item:last-child {
+  margin-bottom: 0;
+}
+
+.dashboard__due-section + .dashboard__due-section {
+  margin-top: 0.5rem;
+}
+
+.dashboard__due-section-title {
+  margin: 0.5rem 0.25rem 0;
+  font: var(--mat-sys-label-large);
+  color: var(--mat-sys-on-surface-variant);
 }
 
 .dashboard__task-title--done {

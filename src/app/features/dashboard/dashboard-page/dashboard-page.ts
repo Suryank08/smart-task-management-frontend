@@ -17,7 +17,7 @@ import { TagService } from '../../../core/services/tag.service';
 import { TaskService } from '../../../core/services/task.service';
 import { TASK_PRIORITIES, TaskDto, TaskPriority, TaskStatus } from '../../../core/models/task.model';
 import { getContrastTextColor } from '../../../shared/color-contrast.util';
-import { PRIORITY_META, STATUS_META, isOverdue } from '../../../shared/task-display.util';
+import { PRIORITY_META, STATUS_META, dueBucket, isOverdue } from '../../../shared/task-display.util';
 
 interface HeatmapDay {
   key: string;
@@ -71,10 +71,22 @@ export class DashboardPage implements OnInit {
     };
   });
 
-  protected readonly upcomingTasks = computed(() =>
+  private readonly activeDueTasks = computed(() =>
     this.tasks()
       .filter((t) => t.status !== 'COMPLETED' && t.status !== 'CANCELLED' && t.dueDate)
-      .sort((a, b) => new Date(a.dueDate!).getTime() - new Date(b.dueDate!).getTime())
+      .sort((a, b) => new Date(a.dueDate!).getTime() - new Date(b.dueDate!).getTime()),
+  );
+
+  /** Due today or overdue — kept together so nothing needing attention gets buried. */
+  protected readonly todayTasks = computed(() =>
+    this.activeDueTasks()
+      .filter((t) => dueBucket(t.dueDate) !== 'upcoming')
+      .slice(0, 6),
+  );
+
+  protected readonly upcomingTasks = computed(() =>
+    this.activeDueTasks()
+      .filter((t) => dueBucket(t.dueDate) === 'upcoming')
       .slice(0, 6),
   );
 

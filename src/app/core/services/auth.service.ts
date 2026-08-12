@@ -52,6 +52,10 @@ export class AuthService {
     return response.user;
   }
 
+  forgotPassword(email: string): Promise<void> {
+    return this.authApi.forgotPassword({ email });
+  }
+
   signOut(): void {
     clearToken();
     this.currentUser.set(null);

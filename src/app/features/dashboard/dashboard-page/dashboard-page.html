@@ -47,45 +47,89 @@
 
         <mat-card class="dashboard__upcoming">
           <div class="dashboard__upcoming-header">
-            <h2>Upcoming tasks</h2>
+            <h2>Tasks</h2>
             <a routerLink="/tasks">View all</a>
           </div>
 
-          @if (upcomingTasks().length === 0) {
+          @if (todayTasks().length === 0 && upcomingTasks().length === 0) {
             <p class="dashboard__empty">Nothing due soon. Enjoy the calm.</p>
           } @else {
-            <mat-nav-list>
-              @for (task of upcomingTasks(); track task.id) {
-                <a mat-list-item routerLink="/tasks">
-                  <mat-checkbox
-                    matListItemIcon
-                    [checked]="task.status === 'COMPLETED'"
-                    (click)="toggleComplete(task, $event)"
-                    [matTooltip]="task.status === 'COMPLETED' ? 'Reopen task' : 'Mark complete'"
-                  />
-                  <span
-                    matListItemTitle
-                    [class.dashboard__task-title--done]="task.status === 'COMPLETED'"
-                  >
-                    <mat-icon inline [class]="priorityMeta[task.priority].className">
-                      {{ priorityMeta[task.priority].icon }}
-                    </mat-icon>
-                    {{ task.title }}
-                  </span>
-                  <span matListItemLine>
-                    Due {{ task.dueDate | date: 'MMM d, y, h:mm a' }}
-                    @if (isOverdue(task.dueDate, task.status)) {
-                      <span class="dashboard__overdue-tag">Overdue</span>
-                    }
-                  </span>
-                  <mat-chip-set matListItemMeta>
-                    <mat-chip [class]="statusMeta[task.status].className" disabled>
-                      {{ statusMeta[task.status].label }}
-                    </mat-chip>
-                  </mat-chip-set>
-                </a>
+            <div class="dashboard__due-section">
+              <h3 class="dashboard__due-section-title">Today</h3>
+              @if (todayTasks().length === 0) {
+                <p class="dashboard__empty dashboard__empty--compact">Nothing due today.</p>
+              } @else {
+                <mat-nav-list>
+                  @for (task of todayTasks(); track task.id) {
+                    <a mat-list-item routerLink="/tasks">
+                      <mat-checkbox
+                        matListItemIcon
+                        [checked]="task.status === 'COMPLETED'"
+                        (click)="toggleComplete(task, $event)"
+                        [matTooltip]="task.status === 'COMPLETED' ? 'Reopen task' : 'Mark complete'"
+                      />
+                      <span
+                        matListItemTitle
+                        [class.dashboard__task-title--done]="task.status === 'COMPLETED'"
+                      >
+                        <mat-icon inline [class]="priorityMeta[task.priority].className">
+                          {{ priorityMeta[task.priority].icon }}
+                        </mat-icon>
+                        {{ task.title }}
+                      </span>
+                      <span matListItemLine>
+                        Due {{ task.dueDate | date: 'MMM d, y, h:mm a' }}
+                        @if (isOverdue(task.dueDate, task.status)) {
+                          <span class="dashboard__overdue-tag">Overdue</span>
+                        }
+                      </span>
+                      <mat-chip-set matListItemMeta>
+                        <mat-chip [class]="statusMeta[task.status].className" disabled>
+                          {{ statusMeta[task.status].label }}
+                        </mat-chip>
+                      </mat-chip-set>
+                    </a>
+                  }
+                </mat-nav-list>
               }
-            </mat-nav-list>
+            </div>
+
+            <div class="dashboard__due-section">
+              <h3 class="dashboard__due-section-title">Upcoming</h3>
+              @if (upcomingTasks().length === 0) {
+                <p class="dashboard__empty dashboard__empty--compact">Nothing upcoming.</p>
+              } @else {
+                <mat-nav-list>
+                  @for (task of upcomingTasks(); track task.id) {
+                    <a mat-list-item routerLink="/tasks">
+                      <mat-checkbox
+                        matListItemIcon
+                        [checked]="task.status === 'COMPLETED'"
+                        (click)="toggleComplete(task, $event)"
+                        [matTooltip]="task.status === 'COMPLETED' ? 'Reopen task' : 'Mark complete'"
+                      />
+                      <span
+                        matListItemTitle
+                        [class.dashboard__task-title--done]="task.status === 'COMPLETED'"
+                      >
+                        <mat-icon inline [class]="priorityMeta[task.priority].className">
+                          {{ priorityMeta[task.priority].icon }}
+                        </mat-icon>
+                        {{ task.title }}
+                      </span>
+                      <span matListItemLine>
+                        Due {{ task.dueDate | date: 'MMM d, y, h:mm a' }}
+                      </span>
+                      <mat-chip-set matListItemMeta>
+                        <mat-chip [class]="statusMeta[task.status].className" disabled>
+                          {{ statusMeta[task.status].label }}
+                        </mat-chip>
+                      </mat-chip-set>
+                    </a>
+                  }
+                </mat-nav-list>
+              }
+            </div>
           }
         </mat-card>
       </div>

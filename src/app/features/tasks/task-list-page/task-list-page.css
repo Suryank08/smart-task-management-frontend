@@ -45,6 +45,15 @@
   color: var(--mat-sys-primary);
 }
 
+.tasks-page__section-title {
+  margin: 0.5rem 0 0;
+  font: var(--mat-sys-title-medium);
+}
+
+.tasks-page__section-title:first-of-type {
+  margin-top: 0;
+}
+
 .tasks-page__grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));

@@ -133,6 +133,18 @@
   color: var(--mat-sys-on-surface-variant);
 }
 
+.auth-page__forgot-link {
+  align-self: flex-end;
+  margin-top: 0.25rem;
+  font-size: 0.8rem;
+  color: var(--mat-sys-primary);
+  text-decoration: none;
+}
+
+.auth-page__forgot-link:hover {
+  text-decoration: underline;
+}
+
 .auth-page__submit {
   height: 46px;
   margin-top: 0.75rem;

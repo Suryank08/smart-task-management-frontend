@@ -19,3 +19,20 @@ export function isOverdue(dueDate: string | null, status: TaskStatus): boolean {
   if (status === 'COMPLETED' || status === 'CANCELLED') return false;
   return new Date(dueDate).getTime() < Date.now();
 }
+
+export type DueBucket = 'today' | 'upcoming' | 'overdue';
+
+/** Buckets a due date by calendar day relative to now, regardless of task status. */
+export function dueBucket(dueDate: string | null): DueBucket | null {
+  if (!dueDate) return null;
+  const due = new Date(dueDate);
+  const now = new Date();
+  if (
+    due.getFullYear() === now.getFullYear() &&
+    due.getMonth() === now.getMonth() &&
+    due.getDate() === now.getDate()
+  ) {
+    return 'today';
+  }
+  return due.getTime() < now.getTime() ? 'overdue' : 'upcoming';
+}

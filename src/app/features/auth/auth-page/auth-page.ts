@@ -9,7 +9,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTabsModule } from '@angular/material/tabs';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { NotifyService } from '../../../core/services/notify.service';
 import { ThemeService } from '../../../core/services/theme.service';
@@ -18,6 +18,7 @@ import { ThemeService } from '../../../core/services/theme.service';
   selector: 'app-auth-page',
   imports: [
     ReactiveFormsModule,
+    RouterLink,
     MatCardModule,
     MatTabsModule,
     MatFormFieldModule,
