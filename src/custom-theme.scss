@@ -11,8 +11,8 @@ html {
     (
       color: (
         theme-type: light,
-        primary: mat.$violet-palette,
-        tertiary: mat.$cyan-palette,
+        primary: mat.$blue-palette,
+        tertiary: mat.$azure-palette,
       ),
       typography: Roboto,
       density: 0,
@@ -27,13 +27,30 @@ html.dark-theme {
     (
       color: (
         theme-type: dark,
-        primary: mat.$violet-palette,
-        tertiary: mat.$cyan-palette,
+        primary: mat.$blue-palette,
+        tertiary: mat.$azure-palette,
       ),
       typography: Roboto,
       density: 0,
     )
   );
+}
+
+html {
+  /* Shared, non-color design tokens (shape + elevation). Color comes from
+     Angular Material's own --mat-sys-* theme tokens above — no custom palette. */
+  --tms-shadow-soft: 0 1px 2px rgba(0, 0, 0, 0.06), 0 4px 12px rgba(0, 0, 0, 0.06);
+  --tms-shadow-hover: 0 4px 10px rgba(0, 0, 0, 0.08), 0 10px 24px rgba(0, 0, 0, 0.1);
+  --tms-radius-lg: 20px;
+  --tms-radius-md: 14px;
+  --tms-radius-sm: 10px;
+
+  --mat-dialog-container-shape: var(--tms-radius-lg);
+}
+
+html.dark-theme {
+  --tms-shadow-soft: 0 1px 2px rgba(0, 0, 0, 0.24), 0 4px 14px rgba(0, 0, 0, 0.28);
+  --tms-shadow-hover: 0 6px 16px rgba(0, 0, 0, 0.32), 0 12px 28px rgba(0, 0, 0, 0.36);
 }
 
 body {

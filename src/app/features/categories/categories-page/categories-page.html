@@ -1,10 +1,10 @@
 <div class="categories-page">
-  <header class="categories-page__header">
+  <header class="page-header">
     <div>
-      <h1>Categories</h1>
-      <p>Group your tasks by area of your life.</p>
+      <h1 class="page-header__title">Categories</h1>
+      <p class="page-header__subtitle">Group your tasks by area of your life.</p>
     </div>
-    <button mat-flat-button color="primary" (click)="openCreateDialog()">
+    <button mat-flat-button color="primary" class="page-header__action" (click)="openCreateDialog()">
       <mat-icon>add</mat-icon>
       New category
     </button>
@@ -21,26 +21,106 @@
       <button mat-stroked-button (click)="openCreateDialog()">Create your first category</button>
     </div>
   } @else {
-    <div class="categories-page__grid">
-      @for (category of categoryService.categories(); track category.id) {
-        <mat-card appearance="outlined" class="category-card">
-          <div class="category-card__swatch" [style.background]="category.color ?? '#6750a4'">
-            {{ category.icon }}
+    <div class="categories-layout">
+      <!-- Grid Panel -->
+      <div class="categories-layout__grid" [class.categories-layout__grid--split]="selectedCategory()">
+        <div class="categories-page__grid">
+          @for (category of categoryService.categories(); track category.id) {
+            <mat-card
+              class="category-card"
+              [class.category-card--selected]="selectedCategory()?.id === category.id"
+              [style.--category-color]="category.color ?? '#6750a4'"
+              (click)="selectCategory(category)"
+            >
+              <div class="category-card__swatch" [style.background]="category.color ?? '#6750a4'">
+                {{ category.icon }}
+              </div>
+              <div class="category-card__text">
+                <div class="category-card__name">{{ category.name }}</div>
+                @let count = categoryTaskCounts().get(category.id) ?? 0;
+                <div class="category-card__count">{{ count }} task{{ count === 1 ? '' : 's' }}</div>
+              </div>
+              <button
+                mat-icon-button
+                [matMenuTriggerFor]="menu"
+                (click)="$event.stopPropagation()"
+                aria-label="Category actions"
+              >
+                <mat-icon>more_vert</mat-icon>
+              </button>
+              <mat-menu #menu="matMenu">
+                <button mat-menu-item (click)="openEditDialog(category); $event.stopPropagation()">
+                  <mat-icon>edit</mat-icon>
+                  <span>Edit</span>
+                </button>
+                <button mat-menu-item (click)="deleteCategory(category); $event.stopPropagation()">
+                  <mat-icon>delete</mat-icon>
+                  <span>Delete</span>
+                </button>
+              </mat-menu>
+            </mat-card>
+          }
+        </div>
+      </div>
+
+      <!-- Detail Drawer Panel -->
+      @if (selectedCategory(); as category) {
+        <mat-card class="category-tasks-panel" [style.--category-color]="category.color ?? '#6750a4'">
+          <div class="category-tasks-panel__header">
+            <div class="category-tasks-panel__title-area">
+              <span class="category-tasks-panel__icon" [style.background]="category.color ?? '#6750a4'">
+                {{ category.icon }}
+              </span>
+              <h3>{{ category.name }} Tasks</h3>
+            </div>
+            <button mat-icon-button (click)="selectCategory(null)" aria-label="Close panel">
+              <mat-icon>close</mat-icon>
+            </button>
           </div>
-          <div class="category-card__name">{{ category.name }}</div>
-          <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Category actions">
-            <mat-icon>more_vert</mat-icon>
-          </button>
-          <mat-menu #menu="matMenu">
-            <button mat-menu-item (click)="openEditDialog(category)">
-              <mat-icon>edit</mat-icon>
-              <span>Edit</span>
-            </button>
-            <button mat-menu-item (click)="deleteCategory(category)">
-              <mat-icon>delete</mat-icon>
-              <span>Delete</span>
-            </button>
-          </mat-menu>
+
+          <div class="category-tasks-panel__body">
+            @if (groupedTasks().length === 0) {
+              <div class="category-tasks-panel__empty">
+                <mat-icon>playlist_add_check</mat-icon>
+                <p>No active tasks in this category.</p>
+              </div>
+            } @else {
+              @for (group of groupedTasks(); track group.label) {
+                <div class="task-group" [class]="'task-group--' + group.className">
+                  <h4 class="task-group__title">{{ group.label }}</h4>
+                  <mat-nav-list dense class="task-group__list">
+                    @for (task of group.tasks; track task.id) {
+                      <div class="task-item">
+                        <mat-checkbox
+                          [checked]="task.status === 'COMPLETED'"
+                          (click)="toggleComplete(task, $event)"
+                          [matTooltip]="task.status === 'COMPLETED' ? 'Reopen task' : 'Mark complete'"
+                        />
+                        <div class="task-item__content">
+                          <span
+                            class="task-item__title"
+                            [class.task-item__title--done]="task.status === 'COMPLETED'"
+                          >
+                            {{ task.title }}
+                          </span>
+                          @if (task.dueDate) {
+                            <span class="task-item__due">
+                              Due {{ task.dueDate | date: 'MMM d, y, h:mm a' }}
+                            </span>
+                          }
+                        </div>
+                        <mat-chip-set class="task-item__meta">
+                          <mat-chip [class]="priorityMeta[task.priority].className" disabled>
+                            {{ priorityMeta[task.priority].label }}
+                          </mat-chip>
+                        </mat-chip-set>
+                      </div>
+                    }
+                  </mat-nav-list>
+                </div>
+              }
+            }
+          </div>
         </mat-card>
       }
     </div>

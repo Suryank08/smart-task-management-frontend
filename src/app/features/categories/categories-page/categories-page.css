@@ -4,24 +4,6 @@
   gap: 1.25rem;
 }
 
-.categories-page__header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-
-.categories-page__header h1 {
-  margin: 0 0 0.25rem;
-  font: var(--mat-sys-headline-medium);
-}
-
-.categories-page__header p {
-  margin: 0;
-  color: var(--mat-sys-on-surface-variant);
-}
-
 .categories-page__loading,
 .categories-page__empty {
   display: flex;
@@ -33,34 +15,340 @@
   color: var(--mat-sys-on-surface-variant);
 }
 
+.categories-page__empty mat-icon {
+  font-size: 2.5rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  color: var(--mat-sys-primary);
+}
+
 .categories-page__grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 1rem;
+  gap: 1.25rem;
 }
 
 .category-card {
+  position: relative;
   display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.85rem 1rem;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.15rem;
+  padding: 1.5rem;
+  border-radius: 16px;
+  background: linear-gradient(135deg, var(--mat-sys-surface-container-low) 0%, var(--mat-sys-surface-container-high) 100%);
+  border: 1px solid color-mix(in srgb, var(--category-color, var(--mat-sys-primary)) 20%, var(--mat-sys-outline-variant));
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  cursor: pointer;
+  overflow: hidden;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+}
+
+.category-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: var(--category-color);
+  transition: height 0.3s ease;
+}
+
+.category-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--category-color);
+  box-shadow: 0 12px 24px -10px color-mix(in srgb, var(--category-color) 40%, transparent);
+}
+
+.category-card:hover::before {
+  height: 6px;
 }
 
 .category-card__swatch {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.1rem;
+  font-size: 1.5rem;
   flex-shrink: 0;
+  background: color-mix(in srgb, var(--category-color) 15%, var(--mat-sys-surface));
+  border: 1px solid color-mix(in srgb, var(--category-color) 30%, transparent);
+  box-shadow: 0 4px 12px -2px color-mix(in srgb, var(--category-color) 25%, transparent);
+  transition: transform 0.3s ease;
+}
+
+.category-card:hover .category-card__swatch {
+  transform: scale(1.1) rotate(5deg);
+}
+
+.category-card__text {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
 }
 
 .category-card__name {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--mat-sys-on-surface);
+  letter-spacing: -0.01em;
+}
+
+.category-card__count {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--mat-sys-on-surface-variant);
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.category-card__count::before {
+  content: '';
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--category-color);
+}
+
+/* Positioning for the menu button */
+.category-card button[mat-icon-button] {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  color: var(--mat-sys-on-surface-variant);
+  opacity: 0.7;
+  transition: opacity 0.2s ease, color 0.2s ease;
+}
+
+.category-card:hover button[mat-icon-button] {
+  opacity: 1;
+  color: var(--mat-sys-on-surface);
+}
+
+/* Layout Wrapper for Split View */
+.categories-layout {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 1.5rem;
+  width: 100%;
+}
+
+.categories-layout__grid {
+  flex: 1 1 100%;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.categories-layout__grid--split {
+  flex: 1 1 55%;
+}
+
+/* Selected State for Category Cards */
+.category-card--selected {
+  border-color: var(--category-color) !important;
+  background: color-mix(in srgb, var(--category-color) 8%, var(--mat-sys-surface-container-high)) !important;
+  box-shadow: 0 8px 16px -4px color-mix(in srgb, var(--category-color) 30%, transparent) !important;
+}
+
+/* Task Detail Drawer Panel */
+.category-tasks-panel {
+  flex: 1 1 45%;
+  display: flex;
+  flex-direction: column;
+  border-radius: 16px;
+  background: var(--mat-sys-surface-container-low);
+  border: 1px solid color-mix(in srgb, var(--category-color, var(--mat-sys-primary)) 20%, var(--mat-sys-outline-variant));
+  padding: 1.5rem;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+  animation: panel-fade-in 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+  min-height: 400px;
+  max-height: calc(100vh - 180px);
+  overflow: hidden;
+}
+
+@keyframes panel-fade-in {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.category-tasks-panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--mat-sys-outline-variant);
+  margin-bottom: 1rem;
+}
+
+.category-tasks-panel__title-area {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.category-tasks-panel__title-area h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--mat-sys-on-surface);
+}
+
+.category-tasks-panel__icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  box-shadow: 0 2px 6px color-mix(in srgb, var(--category-color) 20%, transparent);
+}
+
+.category-tasks-panel__body {
   flex: 1 1 auto;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding-right: 0.25rem;
+}
+
+.category-tasks-panel__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  color: var(--mat-sys-on-surface-variant);
+  padding: 3rem 0;
+}
+
+.category-tasks-panel__empty mat-icon {
+  font-size: 2.25rem;
+  width: 2.25rem;
+  height: 2.25rem;
+  color: var(--mat-sys-primary);
+  opacity: 0.7;
+}
+
+/* Task Grouping */
+.task-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.task-group__title {
+  margin: 0;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding-bottom: 0.25rem;
+  border-bottom: 1px dashed var(--mat-sys-outline-variant);
+}
+
+.task-group--overdue .task-group__title {
+  color: var(--tms-priority-urgent);
+}
+
+.task-group--today .task-group__title {
+  color: var(--tms-status-in-progress);
+}
+
+.task-group--upcoming .task-group__title {
+  color: var(--mat-sys-primary);
+}
+
+.task-group--no-due .task-group__title {
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.task-group__list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0 !important;
+}
+
+/* Individual Task Item inside Panel */
+.task-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 10px;
+  background: var(--mat-sys-surface);
+  border: 1px solid var(--mat-sys-outline-variant);
+  transition: all 0.2s ease;
+}
+
+.task-item:hover {
+  background: var(--mat-sys-surface-container-high);
+  transform: translateX(2px);
+}
+
+.task-item__content {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.task-item__title {
+  font-size: 0.95rem;
   font-weight: 600;
+  color: var(--mat-sys-on-surface);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.task-item__title--done {
+  text-decoration: line-through;
+  opacity: 0.6;
+}
+
+.task-item__due {
+  font-size: 0.75rem;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.task-item__meta {
+  flex-shrink: 0;
+}
+
+.task-item__meta mat-chip {
+  --mat-chip-container-height: 24px;
+  font-size: 0.7rem;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 959px) {
+  .categories-layout {
+    flex-direction: column;
+  }
+
+  .categories-layout__grid {
+    flex: 1 1 100% !important;
+  }
+
+  .category-tasks-panel {
+    flex: 1 1 100% !important;
+    width: 100%;
+    max-height: none;
+    min-height: auto;
+  }
 }

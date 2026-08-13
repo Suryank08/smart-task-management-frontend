@@ -1,10 +1,10 @@
 <div class="tags-page">
-  <header class="tags-page__header">
+  <header class="page-header">
     <div>
-      <h1>Tags</h1>
-      <p>Fine-grained labels you can attach to any task.</p>
+      <h1 class="page-header__title">Tags</h1>
+      <p class="page-header__subtitle">Fine-grained labels you can attach to any task.</p>
     </div>
-    <button mat-flat-button color="primary" (click)="openCreateDialog()">
+    <button mat-flat-button color="primary" class="page-header__action" (click)="openCreateDialog()">
       <mat-icon>add</mat-icon>
       New tag
     </button>
@@ -21,22 +21,33 @@
       <button mat-stroked-button (click)="openCreateDialog()">Create your first tag</button>
     </div>
   } @else {
-    <mat-card appearance="outlined" class="tags-page__card">
-      <mat-chip-set>
-        @for (tag of tagService.tags(); track tag.id) {
-          <mat-chip
-            [style.background]="tag.color ?? '#00696d'"
-            [style.color]="'#fff'"
-            (click)="openEditDialog(tag)"
-            (removed)="deleteTag(tag)"
+    <div class="tags-page__grid">
+      @for (tag of tagService.tags(); track tag.id) {
+        <mat-card
+          class="tag-card"
+          [style.--tag-color]="tag.color ?? '#00696d'"
+          (click)="openEditDialog(tag)"
+        >
+          <div class="tag-card__content">
+            <span class="tag-card__swatch" [style.background]="tag.color ?? '#00696d'">
+              <mat-icon>sell</mat-icon>
+            </span>
+            <div class="tag-card__text">
+              <span class="tag-card__name">{{ tag.name }}</span>
+              @let count = tagTaskCounts().get(tag.id) ?? 0;
+              <span class="tag-card__count">{{ count }} task{{ count === 1 ? '' : 's' }}</span>
+            </div>
+          </div>
+          <button
+            mat-icon-button
+            class="tag-card__delete"
+            (click)="deleteTag(tag); $event.stopPropagation()"
+            [attr.aria-label]="'Delete ' + tag.name"
           >
-            {{ tag.name }}
-            <button matChipRemove aria-label="Delete tag">
-              <mat-icon>cancel</mat-icon>
-            </button>
-          </mat-chip>
-        }
-      </mat-chip-set>
-    </mat-card>
+            <mat-icon>delete</mat-icon>
+          </button>
+        </mat-card>
+      }
+    </div>
   }
 </div>

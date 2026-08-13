@@ -1,6 +1,62 @@
-<h2 mat-dialog-title>{{ isEditMode ? 'Edit task' : 'New task' }}</h2>
+<h2 mat-dialog-title class="tms-dialog-title">
+  <span class="tms-dialog-title__icon"><mat-icon>task_alt</mat-icon></span>
+  {{ isEditMode ? 'Edit task' : 'New task' }}
+</h2>
 
 <mat-dialog-content>
+  <!-- AI Assistant Panel -->
+  <div class="ai-assistant">
+    <div class="ai-assistant__header">
+      <span class="ai-assistant__title">
+        <mat-icon>auto_awesome</mat-icon>
+        AI Task Assistant
+      </span>
+      <span class="ai-assistant__subtitle">
+        Type unstructured text or use the mic to speak, then click auto-fill!
+      </span>
+    </div>
+
+    <div class="ai-assistant__input-container">
+      <textarea
+        [formControl]="aiInputText"
+        placeholder="e.g., Team meeting tomorrow at 10 AM, priority high, estimate 45 mins"
+        rows="2"
+      ></textarea>
+
+      <div class="ai-assistant__actions">
+        <button
+          type="button"
+          mat-icon-button
+          [color]="isListening() ? 'warn' : 'primary'"
+          [class.pulse-listening]="isListening()"
+          (click)="toggleListening()"
+          [matTooltip]="isListening() ? 'Stop listening' : 'Start voice input'"
+        >
+          <mat-icon>{{ isListening() ? 'mic' : 'mic_none' }}</mat-icon>
+        </button>
+
+        <button
+          type="button"
+          mat-flat-button
+          color="accent"
+          (click)="useAiFill()"
+          [disabled]="aiLoading() || !aiInputText.value.trim()"
+        >
+          @if (aiLoading()) {
+            <mat-progress-spinner diameter="18" mode="indeterminate" />
+          } @else {
+            <ng-container>
+              <mat-icon>auto_awesome</mat-icon>
+              <span>Auto-fill Form</span>
+            </ng-container>
+          }
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <mat-divider class="ai-assistant__divider" />
+
   <form class="task-form" [formGroup]="form">
     <mat-form-field appearance="outline" class="task-form__full">
       <mat-label>Title</mat-label>
@@ -66,6 +122,18 @@
       <mat-datepicker #duePicker />
     </mat-form-field>
 
+    <mat-form-field appearance="outline">
+      <mat-label>Reminder date</mat-label>
+      <input matInput [matDatepicker]="reminderDatePicker" formControlName="reminderDate" />
+      <mat-datepicker-toggle matIconSuffix [for]="reminderDatePicker" />
+      <mat-datepicker #reminderDatePicker />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Reminder time</mat-label>
+      <input matInput type="time" formControlName="reminderTime" />
+    </mat-form-field>
+
     <mat-form-field appearance="outline" class="task-form__full">
       <mat-label>Tags</mat-label>
       <mat-select formControlName="tagIds" multiple>
@@ -75,62 +143,61 @@
       </mat-select>
     </mat-form-field>
 
-    @if (isEditMode) {
-      <mat-slide-toggle class="task-form__full" formControlName="archived">
-        Archived
-      </mat-slide-toggle>
-    }
+    <mat-slide-toggle class="task-form__full" formControlName="pinned">
+      <div style="display: flex; align-items: center; gap: 6px;">
+        <mat-icon style="font-size: 20px; width: 20px; height: 20px;">push_pin</mat-icon>
+        <span>Pin Task (Mark as Important)</span>
+      </div>
+    </mat-slide-toggle>
   </form>
 
-  @if (isEditMode) {
-    <mat-divider class="task-form__divider" />
-    <div class="subtasks">
-      <div class="subtasks__header">
-        <h3>Subtasks</h3>
-        @if (subtasks().length > 0) {
-          <span class="subtasks__count">{{ completedSubtaskCount() }}/{{ subtasks().length }} done</span>
-        }
-      </div>
-
-      @if (subtasksLoading()) {
-        <mat-progress-spinner diameter="24" mode="indeterminate" />
-      } @else {
-        <mat-list class="subtasks__list">
-          @for (subtask of subtasks(); track subtask.id) {
-            <mat-list-item>
-              <mat-checkbox
-                matListItemIcon
-                [checked]="subtask.completed"
-                [disabled]="savingSubtaskId() === subtask.id"
-                (change)="toggleSubtask(subtask)"
-              />
-              <span matListItemTitle [class.subtasks__title--done]="subtask.completed">
-                {{ subtask.title }}
-              </span>
-              <button
-                mat-icon-button
-                matListItemMeta
-                (click)="removeSubtask(subtask)"
-                aria-label="Remove subtask"
-              >
-                <mat-icon>delete_outline</mat-icon>
-              </button>
-            </mat-list-item>
-          }
-        </mat-list>
+  <mat-divider class="task-form__divider" />
+  <div class="subtasks">
+    <div class="subtasks__header">
+      <h3>Subtasks</h3>
+      @if (subtasks().length > 0) {
+        <span class="subtasks__count">{{ completedSubtaskCount() }}/{{ subtasks().length }} done</span>
       }
-
-      <div class="subtasks__add">
-        <mat-form-field appearance="outline" class="subtasks__add-field">
-          <mat-label>Add a subtask</mat-label>
-          <input matInput [formControl]="newSubtaskTitle" (keydown.enter)="addSubtask()" />
-        </mat-form-field>
-        <button mat-icon-button (click)="addSubtask()" aria-label="Add subtask">
-          <mat-icon>add</mat-icon>
-        </button>
-      </div>
     </div>
-  }
+
+    @if (subtasksLoading()) {
+      <mat-progress-spinner diameter="24" mode="indeterminate" />
+    } @else {
+      <mat-list class="subtasks__list">
+        @for (subtask of subtasks(); track subtask.id) {
+          <mat-list-item>
+            <mat-checkbox
+              matListItemIcon
+              [checked]="subtask.completed"
+              [disabled]="savingSubtaskId() === subtask.id"
+              (change)="toggleSubtask(subtask)"
+            />
+            <span matListItemTitle [class.subtasks__title--done]="subtask.completed">
+              {{ subtask.title }}
+            </span>
+            <button
+              mat-icon-button
+              matListItemMeta
+              (click)="removeSubtask(subtask)"
+              aria-label="Remove subtask"
+            >
+              <mat-icon>delete_outline</mat-icon>
+            </button>
+          </mat-list-item>
+        }
+      </mat-list>
+    }
+
+    <div class="subtasks__add">
+      <mat-form-field appearance="outline" class="subtasks__add-field">
+        <mat-label>Add a subtask</mat-label>
+        <input matInput [formControl]="newSubtaskTitle" (keydown.enter)="addSubtask()" />
+      </mat-form-field>
+      <button mat-icon-button (click)="addSubtask()" aria-label="Add subtask">
+        <mat-icon>add</mat-icon>
+      </button>
+    </div>
+  </div>
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">

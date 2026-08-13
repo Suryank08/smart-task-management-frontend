@@ -1,19 +1,15 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
-import { KnownAccount, UserCreateRequest, UserDto } from '../models/user.model';
+import { KnownAccount, LoginRequest, UserCreateRequest, UserDto } from '../models/user.model';
+import { AuthApiService } from './auth-api.service';
+import { clearToken, decodeJwtPayload, getToken, setToken } from './token-storage';
 import { UserService } from './user.service';
 
-const SESSION_KEY = 'tms.session.userId';
 const ACCOUNTS_KEY = 'tms.accounts';
 
-/**
- * The backend has no login/session endpoints (only user CRUD), so "auth" here is a
- * device-local convenience: the current user's id is kept in localStorage and the
- * matching profile is (re)loaded from the API. Good enough for a single-device demo,
- * not a real authentication system.
- */
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly userService = inject(UserService);
+  private readonly authApi = inject(AuthApiService);
 
   readonly currentUser = signal<UserDto | null>(null);
   readonly initializing = signal(true);
@@ -22,36 +18,46 @@ export class AuthService {
   readonly knownAccounts = signal<KnownAccount[]>(this.readAccounts());
 
   async restoreSession(): Promise<void> {
-    const userId = localStorage.getItem(SESSION_KEY);
-    if (!userId) {
+    const token = getToken();
+    if (!token) {
+      this.initializing.set(false);
+      return;
+    }
+    const payload = decodeJwtPayload(token);
+    if (!payload) {
+      clearToken();
       this.initializing.set(false);
       return;
     }
     try {
-      const user = await this.userService.findById(userId);
+      const user = await this.userService.findById(payload.sub);
       this.currentUser.set(user);
       this.rememberAccount(user);
     } catch {
-      localStorage.removeItem(SESSION_KEY);
+      clearToken();
     } finally {
       this.initializing.set(false);
     }
   }
 
   async signUp(request: UserCreateRequest): Promise<UserDto> {
-    const user = await this.userService.create(request);
-    this.startSession(user);
-    return user;
+    const response = await this.authApi.register(request);
+    this.startSession(response.token, response.user);
+    return response.user;
   }
 
-  async continueAs(userId: string): Promise<UserDto> {
-    const user = await this.userService.findById(userId);
-    this.startSession(user);
-    return user;
+  async login(request: LoginRequest): Promise<UserDto> {
+    const response = await this.authApi.login(request);
+    this.startSession(response.token, response.user);
+    return response.user;
+  }
+
+  forgotPassword(email: string): Promise<void> {
+    return this.authApi.forgotPassword({ email });
   }
 
   signOut(): void {
-    localStorage.removeItem(SESSION_KEY);
+    clearToken();
     this.currentUser.set(null);
   }
 
@@ -66,8 +72,8 @@ export class AuthService {
     this.rememberAccount(user);
   }
 
-  private startSession(user: UserDto): void {
-    localStorage.setItem(SESSION_KEY, user.id);
+  private startSession(token: string, user: UserDto): void {
+    setToken(token);
     this.currentUser.set(user);
     this.rememberAccount(user);
   }

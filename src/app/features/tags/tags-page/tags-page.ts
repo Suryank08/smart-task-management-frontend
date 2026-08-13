@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
@@ -9,7 +9,9 @@ import { firstValueFrom } from 'rxjs';
 import { TagDto } from '../../../core/models/tag.model';
 import { NotifyService } from '../../../core/services/notify.service';
 import { TagService } from '../../../core/services/tag.service';
+import { TaskService } from '../../../core/services/task.service';
 import { ConfirmDialog } from '../../../shared/confirm-dialog/confirm-dialog';
+import { getContrastTextColor } from '../../../shared/color-contrast.util';
 import { TagDialog } from '../tag-dialog/tag-dialog';
 
 @Component({
@@ -20,19 +22,34 @@ import { TagDialog } from '../tag-dialog/tag-dialog';
 })
 export class TagsPage {
   protected readonly tagService = inject(TagService);
+  private readonly taskService = inject(TaskService);
   private readonly dialog = inject(MatDialog);
   private readonly notify = inject(NotifyService);
 
+  protected readonly getContrastTextColor = getContrastTextColor;
+
+  protected readonly tagTaskCounts = computed(() => {
+    const counts = new Map<string, number>();
+    for (const task of this.taskService.allTasks()) {
+      if (task.status === 'CANCELLED') continue;
+      for (const tagId of task.tagIds) {
+        counts.set(tagId, (counts.get(tagId) ?? 0) + 1);
+      }
+    }
+    return counts;
+  });
+
   constructor() {
     void this.tagService.load();
+    void this.taskService.loadAllForSummary();
   }
 
   openCreateDialog(): void {
-    this.dialog.open(TagDialog, { width: '380px', data: { tag: null } });
+    this.dialog.open(TagDialog, { width: '380px', maxWidth: '95vw', data: { tag: null } });
   }
 
   openEditDialog(tag: TagDto): void {
-    this.dialog.open(TagDialog, { width: '380px', data: { tag } });
+    this.dialog.open(TagDialog, { width: '380px', maxWidth: '95vw', data: { tag } });
   }
 
   async deleteTag(tag: TagDto): Promise<void> {

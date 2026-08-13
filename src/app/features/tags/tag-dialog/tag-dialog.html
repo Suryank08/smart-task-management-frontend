@@ -1,4 +1,7 @@
-<h2 mat-dialog-title>{{ isEditMode ? 'Edit tag' : 'New tag' }}</h2>
+<h2 mat-dialog-title class="tms-dialog-title">
+  <span class="tms-dialog-title__icon"><mat-icon>sell</mat-icon></span>
+  {{ isEditMode ? 'Edit tag' : 'New tag' }}
+</h2>
 
 <mat-dialog-content>
   <form class="tag-form" [formGroup]="form">
@@ -14,6 +17,19 @@
       <label for="tag-color">Color</label>
       <input id="tag-color" type="color" formControlName="color" />
       <span class="tag-form__color-value">{{ form.controls.color.value }}</span>
+    </div>
+
+    <div class="tag-form__swatches">
+      @for (color of colorPresets; track color) {
+        <button
+          type="button"
+          class="tag-form__swatch"
+          [class.tag-form__swatch--selected]="form.controls.color.value === color"
+          [style.background]="color"
+          (click)="form.controls.color.setValue(color)"
+          [attr.aria-label]="'Use color ' + color"
+        ></button>
+      }
     </div>
   </form>
 </mat-dialog-content>

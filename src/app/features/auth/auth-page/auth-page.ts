@@ -9,7 +9,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTabsModule } from '@angular/material/tabs';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { NotifyService } from '../../../core/services/notify.service';
 import { ThemeService } from '../../../core/services/theme.service';
@@ -18,6 +18,7 @@ import { ThemeService } from '../../../core/services/theme.service';
   selector: 'app-auth-page',
   imports: [
     ReactiveFormsModule,
+    RouterLink,
     MatCardModule,
     MatTabsModule,
     MatFormFieldModule,
@@ -39,7 +40,8 @@ export class AuthPage {
   protected readonly theme = inject(ThemeService);
 
   protected readonly submitting = signal(false);
-  protected readonly continuingId = signal<string | null>(null);
+  protected readonly hideSignInPassword = signal(true);
+  protected readonly hideSignUpPassword = signal(true);
 
   protected readonly knownAccounts = this.auth.knownAccounts;
 
@@ -48,6 +50,11 @@ export class AuthPage {
     email: ['', [Validators.required, Validators.email, Validators.maxLength(255)]],
     password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(72)]],
     timezone: [Intl.DateTimeFormat().resolvedOptions().timeZone ?? 'UTC'],
+  });
+
+  protected readonly signInForm = this.fb.nonNullable.group({
+    email: ['', [Validators.required, Validators.email, Validators.maxLength(255)]],
+    password: ['', [Validators.required]],
   });
 
   async submitSignUp(): Promise<void> {
@@ -66,18 +73,32 @@ export class AuthPage {
     }
   }
 
-  async continueAs(userId: string): Promise<void> {
-    if (this.continuingId()) return;
-    this.continuingId.set(userId);
+  async submitSignIn(): Promise<void> {
+    if (this.signInForm.invalid || this.submitting()) {
+      this.signInForm.markAllAsTouched();
+      return;
+    }
+    this.submitting.set(true);
     try {
-      const user = await this.auth.continueAs(userId);
+      const value = this.signInForm.getRawValue();
+      const user = await this.auth.login(value);
       this.notify.success(`Welcome back, ${user.name}!`);
       await this.router.navigateByUrl('/dashboard');
-    } catch {
-      this.auth.forgetAccount(userId);
     } finally {
-      this.continuingId.set(null);
+      this.submitting.set(false);
     }
+  }
+
+  fillEmail(email: string): void {
+    this.signInForm.controls.email.setValue(email);
+  }
+
+  toggleSignInPasswordVisibility(): void {
+    this.hideSignInPassword.update((hidden) => !hidden);
+  }
+
+  toggleSignUpPasswordVisibility(): void {
+    this.hideSignUpPassword.update((hidden) => !hidden);
   }
 
   forgetAccount(event: Event, userId: string): void {

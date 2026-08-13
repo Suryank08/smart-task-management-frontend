@@ -4,28 +4,57 @@
   gap: 1.5rem;
 }
 
-.dashboard__header {
+.dashboard__hero {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
   gap: 1rem;
   flex-wrap: wrap;
+  padding: 1.75rem 2rem;
+  border-radius: var(--tms-radius-lg);
+  background: var(--mat-sys-surface-container-low);
+  box-shadow: var(--tms-shadow-soft);
 }
 
-.dashboard__header h1 {
+.dashboard__hero h1 {
   margin: 0 0 0.25rem;
   font: var(--mat-sys-headline-medium);
+  font-size: clamp(1.4rem, 1.1rem + 1.2vw, 1.85rem);
 }
 
-.dashboard__header p {
+.dashboard__hero p {
   margin: 0;
   color: var(--mat-sys-on-surface-variant);
+}
+
+.dashboard__hero-cta {
+  flex-shrink: 0;
 }
 
 .dashboard__loading {
   display: flex;
   justify-content: center;
   padding: 3rem 0;
+}
+
+.dashboard__body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 320px);
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.dashboard__main {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  min-width: 0;
+}
+
+.dashboard__side {
+  min-width: 0;
+  position: sticky;
+  top: 80px;
 }
 
 .dashboard__stats {
@@ -38,13 +67,47 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 0.25rem;
-  padding: 1rem 1.25rem;
+  gap: 0.4rem;
+  padding: 1.1rem 1.25rem;
+  border-radius: var(--tms-radius-md);
+  box-shadow: var(--tms-shadow-soft);
+  transition: box-shadow 150ms ease, transform 150ms ease;
 }
 
-.stat-card__icon {
-  color: var(--mat-sys-primary);
+.stat-card:hover {
+  box-shadow: var(--tms-shadow-hover);
+  transform: translateY(-2px);
 }
+
+.stat-card__badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--tms-radius-sm);
+}
+
+.stat-card__badge mat-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+.stat-card--total { background: color-mix(in srgb, var(--mat-sys-primary) 10%, var(--mat-sys-surface-container-low)); }
+.stat-card--total .stat-card__badge { background: color-mix(in srgb, var(--mat-sys-primary) 22%, transparent); color: var(--mat-sys-primary); }
+
+.stat-card--pending { background: color-mix(in srgb, var(--tms-status-pending) 10%, var(--mat-sys-surface-container-low)); }
+.stat-card--pending .stat-card__badge { background: color-mix(in srgb, var(--tms-status-pending) 22%, transparent); color: var(--tms-status-pending); }
+
+.stat-card--progress { background: color-mix(in srgb, var(--tms-status-in-progress) 10%, var(--mat-sys-surface-container-low)); }
+.stat-card--progress .stat-card__badge { background: color-mix(in srgb, var(--tms-status-in-progress) 22%, transparent); color: var(--tms-status-in-progress); }
+
+.stat-card--completed { background: color-mix(in srgb, var(--tms-status-completed) 10%, var(--mat-sys-surface-container-low)); }
+.stat-card--completed .stat-card__badge { background: color-mix(in srgb, var(--tms-status-completed) 22%, transparent); color: var(--tms-status-completed); }
+
+.stat-card--overdue { background: color-mix(in srgb, var(--tms-priority-urgent) 12%, var(--mat-sys-surface-container-low)); }
+.stat-card--overdue .stat-card__badge { background: color-mix(in srgb, var(--tms-priority-urgent) 24%, transparent); color: var(--tms-priority-urgent); }
 
 .stat-card__value {
   font: var(--mat-sys-headline-large);
@@ -57,6 +120,8 @@
 
 .dashboard__upcoming {
   padding: 0.5rem 1.25rem 1rem;
+  border-radius: var(--tms-radius-lg);
+  box-shadow: var(--tms-shadow-soft);
 }
 
 .dashboard__upcoming-header {
@@ -75,6 +140,40 @@
   color: var(--mat-sys-primary);
   text-decoration: none;
   font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.dashboard__upcoming mat-list-item {
+  border-radius: var(--tms-radius-sm);
+  padding: 0.35rem 0.5rem;
+  margin-bottom: 0.2rem;
+}
+
+.dashboard__upcoming mat-list-item:last-child {
+  margin-bottom: 0;
+}
+
+.dashboard__due-section + .dashboard__due-section {
+  margin-top: 0.5rem;
+}
+
+.dashboard__due-section-title {
+  margin: 0.5rem 0.25rem 0;
+  font: var(--mat-sys-label-large);
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.dashboard__task-title--done {
+  text-decoration: line-through;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+[matListItemTitle] mat-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+  vertical-align: text-bottom;
+  margin-right: 0.15rem;
 }
 
 .dashboard__empty {
@@ -84,7 +183,333 @@
 }
 
 .dashboard__overdue-tag {
-  color: var(--mat-sys-error);
+  color: var(--tms-priority-urgent);
   font-weight: 600;
   margin-left: 0.4rem;
+}
+
+.dashboard__calendar {
+  padding: 1rem 1rem 0.5rem;
+  border-radius: var(--tms-radius-lg);
+  box-shadow: var(--tms-shadow-soft);
+}
+
+.dashboard__calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 0.25rem 0.25rem;
+}
+
+.dashboard__calendar-header h2 {
+  font: var(--mat-sys-title-medium);
+  margin: 0;
+}
+
+.dashboard__calendar-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  padding: 0 0.25rem 0.75rem;
+}
+
+.dashboard__calendar-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.5rem 0.25rem;
+  border-radius: var(--tms-radius-sm);
+  background: var(--mat-sys-surface-container-high);
+}
+
+.dashboard__calendar-stat-value {
+  font: var(--mat-sys-title-large);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.dashboard__calendar-stat-label {
+  font-size: 0.7rem;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.dashboard__calendar mat-calendar {
+  --mat-datepicker-calendar-container-background-color: transparent;
+}
+
+/*
+ * mat-calendar renders its day cells from Material's own MatCalendarBody
+ * component template, not this component's template, so plain scoped
+ * selectors never match them — ::ng-deep is required to reach in and style
+ * the cells that dateClass() marks as having a task due.
+ */
+.dashboard__calendar ::ng-deep td.dashboard-calendar__has-task .mat-calendar-body-cell-content {
+  font-weight: 700;
+}
+
+.dashboard__calendar ::ng-deep td.dashboard-calendar__has-task .mat-calendar-body-cell-content::after {
+  content: '';
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.dashboard__calendar ::ng-deep td.priority-low .mat-calendar-body-cell-content { color: var(--tms-priority-low); }
+.dashboard__calendar ::ng-deep td.priority-medium .mat-calendar-body-cell-content { color: var(--tms-priority-medium); }
+.dashboard__calendar ::ng-deep td.priority-high .mat-calendar-body-cell-content { color: var(--tms-priority-high); }
+.dashboard__calendar ::ng-deep td.priority-urgent .mat-calendar-body-cell-content { color: var(--tms-priority-urgent); }
+
+.dashboard__calendar ::ng-deep td.dashboard-calendar__has-task.mat-calendar-body-selected .mat-calendar-body-cell-content {
+  color: var(--mat-sys-on-primary);
+}
+
+.dashboard__calendar-day {
+  padding: 0.5rem 0.25rem 0.75rem;
+  border-top: 1px solid var(--mat-sys-outline-variant);
+  margin-top: 0.25rem;
+}
+
+.dashboard__calendar-day h3 {
+  font: var(--mat-sys-title-small);
+  margin: 0.75rem 0 0.25rem;
+}
+
+.dashboard__calendar-list mat-list-item {
+  border-radius: var(--tms-radius-sm);
+}
+
+.dashboard__empty--compact {
+  padding: 0.5rem 0;
+  text-align: left;
+}
+
+.dashboard__lists {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.dashboard__categories,
+.dashboard__tags {
+  padding: 0.5rem 1.25rem 1.1rem;
+  border-radius: var(--tms-radius-lg);
+  box-shadow: var(--tms-shadow-soft);
+}
+
+.dashboard__list-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 0.75rem;
+}
+
+.dashboard__list-header h2 {
+  font: var(--mat-sys-title-medium);
+  margin: 0;
+}
+
+.dashboard__list-header a {
+  color: var(--mat-sys-primary);
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.dashboard__category-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-top: 0.75rem;
+}
+
+.dashboard__category-row {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.5rem 0.6rem;
+  border-radius: var(--tms-radius-sm);
+  text-decoration: none;
+  color: inherit;
+  background: color-mix(in srgb, var(--category-color, var(--mat-sys-primary)) 8%, transparent);
+  transition: background-color 150ms ease;
+}
+
+.dashboard__category-row:hover {
+  background: color-mix(in srgb, var(--category-color, var(--mat-sys-primary)) 16%, transparent);
+}
+
+.dashboard__category-swatch {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
+.dashboard__category-name {
+  flex: 1 1 auto;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dashboard__category-count {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.dashboard__tag-chips {
+  margin-top: 0.75rem;
+}
+
+.dashboard__tag-chips mat-chip {
+  font-weight: 600;
+}
+
+.dashboard__tag-chip-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  margin-left: 0.4rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  background: color-mix(in srgb, currentColor 22%, transparent);
+  color: inherit;
+}
+
+@media (max-width: 899px) {
+  .dashboard__lists {
+    grid-template-columns: 1fr;
+  }
+}
+
+.dashboard__heatmap {
+  padding: 1.25rem 1.5rem 1.5rem;
+  border-radius: var(--tms-radius-lg);
+  box-shadow: var(--tms-shadow-soft);
+}
+
+.dashboard__heatmap-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.dashboard__heatmap-header h2 {
+  font: var(--mat-sys-title-medium);
+  margin: 0 0 0.15rem;
+}
+
+.dashboard__heatmap-header p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.dashboard__heatmap-legend {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.75rem;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.dashboard__heatmap-scroll {
+  overflow-x: auto;
+  padding-bottom: 0.25rem;
+}
+
+.dashboard__heatmap-months {
+  display: flex;
+  gap: 3px;
+  margin-bottom: 0.25rem;
+  padding-left: 1px;
+}
+
+.dashboard__heatmap-month {
+  width: 13px;
+  flex-shrink: 0;
+  font-size: 0.7rem;
+  color: var(--mat-sys-on-surface-variant);
+  white-space: nowrap;
+}
+
+.dashboard__heatmap-grid {
+  display: flex;
+  gap: 3px;
+  width: max-content;
+}
+
+.dashboard__heatmap-week {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.dashboard__heatmap-cell {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  background: var(--mat-sys-surface-container-high);
+}
+
+.dashboard__heatmap-cell--level-0 { background: var(--mat-sys-surface-container-high); }
+.dashboard__heatmap-cell--level-1 { background: color-mix(in srgb, var(--mat-sys-primary) 25%, var(--mat-sys-surface-container-high)); }
+.dashboard__heatmap-cell--level-2 { background: color-mix(in srgb, var(--mat-sys-primary) 48%, var(--mat-sys-surface-container-high)); }
+.dashboard__heatmap-cell--level-3 { background: color-mix(in srgb, var(--mat-sys-primary) 72%, var(--mat-sys-surface-container-high)); }
+.dashboard__heatmap-cell--level-4 { background: var(--mat-sys-primary); }
+
+.dashboard__heatmap-legend .dashboard__heatmap-cell {
+  width: 10px;
+  height: 10px;
+}
+
+@media (max-width: 959px) {
+  .dashboard__body {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard__side {
+    position: static;
+  }
+}
+
+@media (max-width: 599px) {
+  .dashboard__hero {
+    padding: 1.25rem 1.25rem;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .dashboard__hero-cta {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .dashboard__stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 359px) {
+  .dashboard__stats {
+    grid-template-columns: 1fr;
+  }
 }

@@ -3,11 +3,13 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { TagDto } from '../../../core/models/tag.model';
 import { NotifyService } from '../../../core/services/notify.service';
 import { TagService } from '../../../core/services/tag.service';
+import { COLOR_PRESETS } from '../../../shared/color-presets.util';
 
 export interface TagDialogData {
   tag: TagDto | null;
@@ -21,6 +23,7 @@ export interface TagDialogData {
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
+    MatIconModule,
     MatProgressSpinnerModule,
   ],
   templateUrl: './tag-dialog.html',
@@ -35,6 +38,7 @@ export class TagDialog {
 
   protected readonly isEditMode = this.data.tag !== null;
   protected readonly saving = signal(false);
+  protected readonly colorPresets = COLOR_PRESETS;
 
   protected readonly form = this.fb.nonNullable.group({
     name: [this.data.tag?.name ?? '', [Validators.required, Validators.maxLength(30)]],

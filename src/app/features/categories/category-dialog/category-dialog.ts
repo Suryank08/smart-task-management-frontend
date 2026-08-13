@@ -3,11 +3,13 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { CategoryDto } from '../../../core/models/category.model';
 import { CategoryService } from '../../../core/services/category.service';
 import { NotifyService } from '../../../core/services/notify.service';
+import { COLOR_PRESETS } from '../../../shared/color-presets.util';
 
 export interface CategoryDialogData {
   category: CategoryDto | null;
@@ -23,6 +25,7 @@ const ICON_OPTIONS = ['📁', '💼', '🏠', '🎯', '📚', '💪', '🛒', '�
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
+    MatIconModule,
     MatProgressSpinnerModule,
   ],
   templateUrl: './category-dialog.html',
@@ -38,6 +41,7 @@ export class CategoryDialog {
   protected readonly isEditMode = this.data.category !== null;
   protected readonly saving = signal(false);
   protected readonly iconOptions = ICON_OPTIONS;
+  protected readonly colorPresets = COLOR_PRESETS;
 
   protected readonly form = this.fb.nonNullable.group({
     name: [this.data.category?.name ?? '', [Validators.required, Validators.maxLength(50)]],

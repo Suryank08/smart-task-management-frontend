@@ -8,6 +8,12 @@ export const routes: Routes = [
     loadComponent: () => import('./features/auth/auth-page/auth-page').then((m) => m.AuthPage),
   },
   {
+    path: 'forgot-password',
+    canActivate: [guestGuard],
+    loadComponent: () =>
+      import('./features/auth/forgot-password-page/forgot-password-page').then((m) => m.ForgotPasswordPage),
+  },
+  {
     path: '',
     canActivate: [authGuard],
     loadComponent: () => import('./layout/shell/shell').then((m) => m.Shell),
@@ -22,6 +28,11 @@ export const routes: Routes = [
         path: 'tasks',
         loadComponent: () =>
           import('./features/tasks/task-list-page/task-list-page').then((m) => m.TaskListPage),
+      },
+      {
+        path: 'pinned-tasks',
+        loadComponent: () =>
+          import('./features/pinned-tasks/pinned-tasks-page/pinned-tasks-page').then((m) => m.PinnedTasksPage),
       },
       {
         path: 'categories',
