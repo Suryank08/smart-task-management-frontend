@@ -17,9 +17,10 @@ export interface TaskDto {
   completedAt: string | null;
   estimatedMinutes: number | null;
   actualMinutes: number | null;
-  archived: boolean;
+  pinned: boolean;
   aiMetadata: Record<string, unknown>;
   tagIds: string[];
+  reminderAt: string | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -32,7 +33,10 @@ export interface TaskCreateRequest {
   startDate?: string | null;
   dueDate?: string | null;
   estimatedMinutes?: number | null;
+  reminderAt?: string | null;
   tagIds?: string[];
+  pinned?: boolean;
+  subtasks?: string[];
 }
 
 export interface TaskUpdateRequest {
@@ -45,13 +49,14 @@ export interface TaskUpdateRequest {
   dueDate?: string | null;
   estimatedMinutes?: number | null;
   actualMinutes?: number | null;
-  archived: boolean;
+  pinned: boolean;
+  reminderAt?: string | null;
   tagIds?: string[];
 }
 
 export interface TaskFilter {
   status?: TaskStatus | null;
   priority?: TaskPriority | null;
-  archived?: boolean | null;
+  pinned?: boolean | null;
   search?: string;
 }

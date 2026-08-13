@@ -49,6 +49,7 @@ export class Shell {
   protected readonly navItems: NavItem[] = [
     { label: 'Dashboard', icon: 'space_dashboard', route: '/dashboard' },
     { label: 'Tasks', icon: 'task_alt', route: '/tasks' },
+    { label: 'Pinned Tasks', icon: 'push_pin', route: '/pinned-tasks' },
     { label: 'Categories', icon: 'category', route: '/categories' },
     { label: 'Tags', icon: 'sell', route: '/tags' },
     { label: 'Profile', icon: 'person', route: '/profile' },

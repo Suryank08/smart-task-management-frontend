@@ -62,12 +62,21 @@
                 <mat-nav-list>
                   @for (task of todayTasks(); track task.id) {
                     <a mat-list-item routerLink="/tasks">
-                      <mat-checkbox
-                        matListItemIcon
-                        [checked]="task.status === 'COMPLETED'"
-                        (click)="toggleComplete(task, $event)"
-                        [matTooltip]="task.status === 'COMPLETED' ? 'Reopen task' : 'Mark complete'"
-                      />
+                      <div matListItemIcon style="display: flex; align-items: center; gap: 4px;">
+                        <mat-checkbox
+                          [checked]="task.status === 'COMPLETED'"
+                          (click)="toggleComplete(task, $event)"
+                          [matTooltip]="task.status === 'COMPLETED' ? 'Reopen task' : 'Mark complete'"
+                        />
+                        <button
+                          mat-icon-button
+                          (click)="togglePin(task, $event)"
+                          [matTooltip]="task.pinned ? 'Unpin task' : 'Pin task'"
+                          style="width: 32px; height: 32px; line-height: 32px;"
+                        >
+                          <mat-icon [style.color]="task.pinned ? '#3f51b5' : '#888888'" style="font-size: 18px; width: 18px; height: 18px;">push_pin</mat-icon>
+                        </button>
+                      </div>
                       <span
                         matListItemTitle
                         [class.dashboard__task-title--done]="task.status === 'COMPLETED'"
@@ -102,12 +111,21 @@
                 <mat-nav-list>
                   @for (task of upcomingTasks(); track task.id) {
                     <a mat-list-item routerLink="/tasks">
-                      <mat-checkbox
-                        matListItemIcon
-                        [checked]="task.status === 'COMPLETED'"
-                        (click)="toggleComplete(task, $event)"
-                        [matTooltip]="task.status === 'COMPLETED' ? 'Reopen task' : 'Mark complete'"
-                      />
+                      <div matListItemIcon style="display: flex; align-items: center; gap: 4px;">
+                        <mat-checkbox
+                          [checked]="task.status === 'COMPLETED'"
+                          (click)="toggleComplete(task, $event)"
+                          [matTooltip]="task.status === 'COMPLETED' ? 'Reopen task' : 'Mark complete'"
+                        />
+                        <button
+                          mat-icon-button
+                          (click)="togglePin(task, $event)"
+                          [matTooltip]="task.pinned ? 'Unpin task' : 'Pin task'"
+                          style="width: 32px; height: 32px; line-height: 32px;"
+                        >
+                          <mat-icon [style.color]="task.pinned ? '#3f51b5' : '#888888'" style="font-size: 18px; width: 18px; height: 18px;">push_pin</mat-icon>
+                        </button>
+                      </div>
                       <span
                         matListItemTitle
                         [class.dashboard__task-title--done]="task.status === 'COMPLETED'"
@@ -169,12 +187,21 @@
                 <mat-nav-list dense class="dashboard__calendar-list">
                   @for (task of tasksOnSelectedDate(); track task.id) {
                     <a mat-list-item routerLink="/tasks">
-                      <mat-checkbox
-                        matListItemIcon
-                        [checked]="task.status === 'COMPLETED'"
-                        (click)="toggleComplete(task, $event)"
-                        [matTooltip]="task.status === 'COMPLETED' ? 'Reopen task' : 'Mark complete'"
-                      />
+                      <div matListItemIcon style="display: flex; align-items: center; gap: 4px;">
+                        <mat-checkbox
+                          [checked]="task.status === 'COMPLETED'"
+                          (click)="toggleComplete(task, $event)"
+                          [matTooltip]="task.status === 'COMPLETED' ? 'Reopen task' : 'Mark complete'"
+                        />
+                        <button
+                          mat-icon-button
+                          (click)="togglePin(task, $event)"
+                          [matTooltip]="task.pinned ? 'Unpin task' : 'Pin task'"
+                          style="width: 32px; height: 32px; line-height: 32px;"
+                        >
+                          <mat-icon [style.color]="task.pinned ? '#3f51b5' : '#888888'" style="font-size: 18px; width: 18px; height: 18px;">push_pin</mat-icon>
+                        </button>
+                      </div>
                       <span
                         matListItemTitle
                         [class.dashboard__task-title--done]="task.status === 'COMPLETED'"

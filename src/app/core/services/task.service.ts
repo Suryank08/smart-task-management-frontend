@@ -52,8 +52,8 @@ export class TaskService {
       const filter = this.filter();
       if (filter.status) params = params.set('status', filter.status);
       if (filter.priority) params = params.set('priority', filter.priority);
-      if (filter.archived !== null && filter.archived !== undefined) {
-        params = params.set('archived', filter.archived);
+      if (filter.pinned !== null && filter.pinned !== undefined) {
+        params = params.set('pinned', filter.pinned);
       }
       if (filter.search) params = params.set('search', filter.search);
 
@@ -66,7 +66,7 @@ export class TaskService {
 
   /** Loads a large unfiltered page for dashboard summaries. */
   async loadAllForSummary(): Promise<void> {
-    const params = new HttpParams().set('page', 0).set('size', 200).set('archived', false);
+    const params = new HttpParams().set('page', 0).set('size', 200);
     const page = await firstValueFrom(this.http.get<Page<TaskDto>>(this.baseUrl, { params }));
     this.allTasks.set(page.content);
   }
@@ -88,6 +88,7 @@ export class TaskService {
   async create(request: TaskCreateRequest): Promise<TaskDto> {
     const created = await firstValueFrom(this.http.post<TaskDto>(this.baseUrl, request));
     await this.load();
+    this.allTasks.update((tasks) => [...tasks, created]);
     return created;
   }
 
@@ -97,11 +98,13 @@ export class TaskService {
       ...p,
       content: p.content.map((t) => (t.id === id ? updated : t)),
     }));
+    this.allTasks.update((tasks) => tasks.map((t) => (t.id === id ? updated : t)));
     return updated;
   }
 
   async delete(id: string): Promise<void> {
     await firstValueFrom(this.http.delete<void>(`${this.baseUrl}/${id}`));
     await this.load();
+    this.allTasks.update((tasks) => tasks.filter((t) => t.id !== id));
   }
 }

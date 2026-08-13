@@ -24,10 +24,10 @@ import { TaskService } from '../../../core/services/task.service';
 import { TASK_PRIORITIES, TASK_STATUSES, TaskDto, TaskFilter, TaskPriority, TaskStatus } from '../../../core/models/task.model';
 import { ConfirmDialog } from '../../../shared/confirm-dialog/confirm-dialog';
 import { PRIORITY_META, STATUS_META, dueBucket, isOverdue } from '../../../shared/task-display.util';
-import { TaskFormDialog } from '../task-form-dialog/task-form-dialog';
+import { TaskFormDialog } from '../../tasks/task-form-dialog/task-form-dialog';
 
 @Component({
-  selector: 'app-task-list-page',
+  selector: 'app-pinned-tasks-page',
   imports: [
     ReactiveFormsModule,
     DatePipe,
@@ -46,10 +46,10 @@ import { TaskFormDialog } from '../task-form-dialog/task-form-dialog';
     MatProgressSpinnerModule,
     MatTooltipModule,
   ],
-  templateUrl: './task-list-page.html',
-  styleUrl: './task-list-page.css',
+  templateUrl: './pinned-tasks-page.html',
+  styleUrl: './pinned-tasks-page.css',
 })
-export class TaskListPage {
+export class PinnedTasksPage {
   private readonly taskService = inject(TaskService);
   private readonly categoryService = inject(CategoryService);
   private readonly tagService = inject(TagService);
@@ -70,16 +70,12 @@ export class TaskListPage {
   protected readonly searchControl = new FormControl('', { nonNullable: true });
   protected readonly statusFilter = signal<TaskStatus | 'ALL'>('ALL');
   protected readonly priorityFilter = signal<TaskPriority | 'ALL'>('ALL');
-  protected readonly showPinned = signal(false);
 
   protected readonly categoryMap = computed(
     () => new Map(this.categories().map((c) => [c.id, c])),
   );
   protected readonly tagMap = computed(() => new Map(this.tags().map((t) => [t.id, t])));
 
-  // Grouped by due date within the current (server-paginated, dueDate-asc-sorted) page only —
-  // a natural grouping could in principle straddle two pages, an accepted trade-off for not
-  // needing a dedicated backend endpoint just for this client-side grouping.
   protected readonly todayTasks = computed(() =>
     this.page().content.filter((t) => {
       const bucket = dueBucket(t.dueDate);
@@ -93,9 +89,6 @@ export class TaskListPage {
     this.page().content.filter((t) => dueBucket(t.dueDate) === null),
   );
 
-  // ngTemplateOutlet's `let-task` context isn't statically typed (no ngTemplateContextGuard
-  // like *ngFor has), so `task` is `any` inside the shared #taskCard template — these give
-  // strict-mode-safe lookups in place of indexing PRIORITY_META/STATUS_META directly there.
   protected priorityMetaFor(priority: TaskPriority) {
     return PRIORITY_META[priority];
   }
@@ -117,7 +110,7 @@ export class TaskListPage {
       const filter: TaskFilter = {
         status: this.statusFilter() === 'ALL' ? null : (this.statusFilter() as TaskStatus),
         priority: this.priorityFilter() === 'ALL' ? null : (this.priorityFilter() as TaskPriority),
-        pinned: this.showPinned() ? true : null,
+        pinned: true,
         search: this.debouncedSearch().trim() || undefined,
       };
       this.taskService.setFilter(filter);

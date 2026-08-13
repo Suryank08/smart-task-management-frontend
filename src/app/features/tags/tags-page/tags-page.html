@@ -21,26 +21,33 @@
       <button mat-stroked-button (click)="openCreateDialog()">Create your first tag</button>
     </div>
   } @else {
-    <mat-card class="tags-page__card">
-      <mat-chip-set>
-        @for (tag of tagService.tags(); track tag.id) {
-          <mat-chip
-            [style.background]="tag.color ?? '#00696d'"
-            [style.color]="getContrastTextColor(tag.color)"
-            [style.--mat-chip-with-trailing-icon-trailing-icon-color]="getContrastTextColor(tag.color)"
-            (click)="openEditDialog(tag)"
-            (removed)="deleteTag(tag)"
+    <div class="tags-page__grid">
+      @for (tag of tagService.tags(); track tag.id) {
+        <mat-card
+          class="tag-card"
+          [style.--tag-color]="tag.color ?? '#00696d'"
+          (click)="openEditDialog(tag)"
+        >
+          <div class="tag-card__content">
+            <span class="tag-card__swatch" [style.background]="tag.color ?? '#00696d'">
+              <mat-icon>sell</mat-icon>
+            </span>
+            <div class="tag-card__text">
+              <span class="tag-card__name">{{ tag.name }}</span>
+              @let count = tagTaskCounts().get(tag.id) ?? 0;
+              <span class="tag-card__count">{{ count }} task{{ count === 1 ? '' : 's' }}</span>
+            </div>
+          </div>
+          <button
+            mat-icon-button
+            class="tag-card__delete"
+            (click)="deleteTag(tag); $event.stopPropagation()"
+            [attr.aria-label]="'Delete ' + tag.name"
           >
-            {{ tag.name }}
-            @if (tagTaskCounts().get(tag.id); as count) {
-              <span class="tags-page__chip-count">{{ count }}</span>
-            }
-            <button matChipRemove [attr.aria-label]="'Delete ' + tag.name">
-              <mat-icon>cancel</mat-icon>
-            </button>
-          </mat-chip>
-        }
-      </mat-chip-set>
-    </mat-card>
+            <mat-icon>delete</mat-icon>
+          </button>
+        </mat-card>
+      }
+    </div>
   }
 </div>

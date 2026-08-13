@@ -30,6 +30,11 @@ export const routes: Routes = [
           import('./features/tasks/task-list-page/task-list-page').then((m) => m.TaskListPage),
       },
       {
+        path: 'pinned-tasks',
+        loadComponent: () =>
+          import('./features/pinned-tasks/pinned-tasks-page/pinned-tasks-page').then((m) => m.PinnedTasksPage),
+      },
+      {
         path: 'categories',
         loadComponent: () =>
           import('./features/categories/categories-page/categories-page').then((m) => m.CategoriesPage),

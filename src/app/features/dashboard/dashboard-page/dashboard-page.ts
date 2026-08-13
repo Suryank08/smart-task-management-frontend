@@ -257,10 +257,29 @@ export class DashboardPage implements OnInit {
       dueDate: task.dueDate,
       estimatedMinutes: task.estimatedMinutes,
       actualMinutes: task.actualMinutes,
-      archived: task.archived,
+      pinned: task.pinned,
       tagIds: task.tagIds,
     });
     this.notify.success(nextStatus === 'COMPLETED' ? 'Task marked complete' : 'Task reopened');
+  }
+
+  async togglePin(task: TaskDto, event: Event): Promise<void> {
+    event.stopPropagation();
+    const nextPinned = !task.pinned;
+    await this.taskService.update(task.id, {
+      categoryId: task.categoryId,
+      title: task.title,
+      description: task.description,
+      status: task.status,
+      priority: task.priority,
+      startDate: task.startDate,
+      dueDate: task.dueDate,
+      estimatedMinutes: task.estimatedMinutes,
+      actualMinutes: task.actualMinutes,
+      pinned: nextPinned,
+      tagIds: task.tagIds,
+    });
+    this.notify.success(nextPinned ? 'Task pinned to important' : 'Task unpinned');
   }
 
   async ngOnInit(): Promise<void> {
