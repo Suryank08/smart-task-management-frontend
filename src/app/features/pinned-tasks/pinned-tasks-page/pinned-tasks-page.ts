@@ -143,7 +143,6 @@ export class PinnedTasksPage {
       startDate: task.startDate,
       dueDate: task.dueDate,
       estimatedMinutes: task.estimatedMinutes,
-      actualMinutes: task.actualMinutes,
       pinned: task.pinned,
       tagIds: task.tagIds,
     });
@@ -162,7 +161,6 @@ export class PinnedTasksPage {
       startDate: task.startDate,
       dueDate: task.dueDate,
       estimatedMinutes: task.estimatedMinutes,
-      actualMinutes: task.actualMinutes,
       pinned: nextPinned,
       tagIds: task.tagIds,
     });

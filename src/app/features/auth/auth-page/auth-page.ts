@@ -58,6 +58,11 @@ export class AuthPage {
   });
 
   async submitSignUp(): Promise<void> {
+    const controls = this.signUpForm.controls;
+    controls.name.setValue(controls.name.value.trim());
+    controls.email.setValue(controls.email.value.trim());
+    controls.password.setValue(controls.password.value.trim());
+
     if (this.signUpForm.invalid || this.submitting()) {
       this.signUpForm.markAllAsTouched();
       return;
@@ -74,6 +79,10 @@ export class AuthPage {
   }
 
   async submitSignIn(): Promise<void> {
+    const controls = this.signInForm.controls;
+    controls.email.setValue(controls.email.value.trim());
+    controls.password.setValue(controls.password.value.trim());
+
     if (this.signInForm.invalid || this.submitting()) {
       this.signInForm.markAllAsTouched();
       return;
@@ -91,6 +100,20 @@ export class AuthPage {
 
   fillEmail(email: string): void {
     this.signInForm.controls.email.setValue(email);
+  }
+
+  trimControl(formName: 'signIn' | 'signUp', controlName: 'name' | 'email' | 'password'): void {
+    if (formName === 'signIn') {
+      const control = this.signInForm.get(controlName);
+      if (control) {
+        control.setValue(control.value.trim());
+      }
+    } else {
+      const control = this.signUpForm.get(controlName);
+      if (control) {
+        control.setValue(control.value.trim());
+      }
+    }
   }
 
   toggleSignInPasswordVisibility(): void {

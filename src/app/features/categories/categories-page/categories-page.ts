@@ -152,7 +152,6 @@ export class CategoriesPage {
       startDate: task.startDate,
       dueDate: task.dueDate,
       estimatedMinutes: task.estimatedMinutes,
-      actualMinutes: task.actualMinutes,
       pinned: task.pinned,
       tagIds: task.tagIds,
     });

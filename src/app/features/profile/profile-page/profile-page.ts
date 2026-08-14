@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
@@ -45,6 +45,35 @@ export class ProfilePage {
     avatarUrl: [this.currentUser.avatarUrl ?? ''],
     timezone: [this.currentUser.timezone, [Validators.required]],
   });
+
+  protected readonly failedUrls = signal<Set<string>>(new Set());
+
+  protected readonly showAvatarImage = computed(() => {
+    const url = this.auth.currentUser()?.avatarUrl;
+    if (!url) return false;
+    return !this.failedUrls().has(url);
+  });
+
+  protected readonly userInitials = computed(() => {
+    const name = this.auth.currentUser()?.name ?? '';
+    return name
+      .split(' ')
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((part) => part[0]?.toUpperCase())
+      .join('');
+  });
+
+  protected onAvatarError(): void {
+    const url = this.auth.currentUser()?.avatarUrl;
+    if (url) {
+      this.failedUrls.update((set) => {
+        const next = new Set(set);
+        next.add(url);
+        return next;
+      });
+    }
+  }
 
   async submit(): Promise<void> {
     if (this.form.invalid || this.saving()) {

@@ -114,6 +114,12 @@ export class TaskFormDialog {
   }
 
   async submit(): Promise<void> {
+    const controls = this.form.controls;
+    controls.title.setValue(controls.title.value.trim());
+    if (controls.description.value) {
+      controls.description.setValue(controls.description.value.trim());
+    }
+
     if (this.form.invalid || this.saving()) {
       this.form.markAllAsTouched();
       return;
@@ -163,7 +169,6 @@ export class TaskFormDialog {
           startDate,
           dueDate,
           estimatedMinutes: value.estimatedMinutes,
-          actualMinutes: this.data.task.actualMinutes,
           reminderAt,
           pinned: value.pinned,
           tagIds: value.tagIds,

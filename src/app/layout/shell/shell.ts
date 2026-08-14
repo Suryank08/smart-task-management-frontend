@@ -50,6 +50,7 @@ export class Shell {
     { label: 'Dashboard', icon: 'space_dashboard', route: '/dashboard' },
     { label: 'Tasks', icon: 'task_alt', route: '/tasks' },
     { label: 'Pinned Tasks', icon: 'push_pin', route: '/pinned-tasks' },
+    { label: 'AI Suggests', icon: 'auto_awesome', route: '/ai-plan' },
     { label: 'Categories', icon: 'category', route: '/categories' },
     { label: 'Tags', icon: 'sell', route: '/tags' },
     { label: 'Profile', icon: 'person', route: '/profile' },
@@ -72,6 +73,25 @@ export class Shell {
       .map((part) => part[0]?.toUpperCase())
       .join('');
   });
+
+  private readonly failedUrls = signal<Set<string>>(new Set());
+
+  protected readonly showAvatarImage = computed(() => {
+    const url = this.auth.currentUser()?.avatarUrl;
+    if (!url) return false;
+    return !this.failedUrls().has(url);
+  });
+
+  protected onAvatarError(): void {
+    const url = this.auth.currentUser()?.avatarUrl;
+    if (url) {
+      this.failedUrls.update((set) => {
+        const next = new Set(set);
+        next.add(url);
+        return next;
+      });
+    }
+  }
 
   toggleSidenav(): void {
     this.sidenavOpened.update((open) => !open);

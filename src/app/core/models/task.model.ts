@@ -16,9 +16,7 @@ export interface TaskDto {
   dueDate: string | null;
   completedAt: string | null;
   estimatedMinutes: number | null;
-  actualMinutes: number | null;
   pinned: boolean;
-  aiMetadata: Record<string, unknown>;
   tagIds: string[];
   reminderAt: string | null;
   createdAt: string;
@@ -48,7 +46,6 @@ export interface TaskUpdateRequest {
   startDate?: string | null;
   dueDate?: string | null;
   estimatedMinutes?: number | null;
-  actualMinutes?: number | null;
   pinned: boolean;
   reminderAt?: string | null;
   tagIds?: string[];

@@ -113,6 +113,14 @@
   font-weight: 700;
 }
 
+.shell__avatar-img {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+}
+
 .shell__menu-header {
   padding: 0.5rem 1rem 0.75rem;
 }

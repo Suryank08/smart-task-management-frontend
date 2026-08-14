@@ -1,0 +1,121 @@
+<div class="ai-plan-page">
+  <header class="page-header">
+    <div>
+      <h1 class="page-header__title">AI Daily Plan</h1>
+      <p class="page-header__subtitle">Optimize your workflow with an intelligent task plan customized for productivity.</p>
+    </div>
+    <div class="page-header__actions">
+      <button
+        mat-flat-button
+        color="primary"
+        (click)="generatePlan()"
+        [disabled]="generating() || loading() || !hasActiveTasks()"
+      >
+        @if (generating()) {
+          <span class="button-content">
+            <mat-spinner diameter="18" class="button-spinner"></mat-spinner>
+            <span>Crafting Plan...</span>
+          </span>
+        } @else {
+          <span class="button-content">
+            <mat-icon>auto_awesome</mat-icon>
+            <span>Suggest Plan</span>
+          </span>
+        }
+      </button>
+    </div>
+  </header>
+
+  @if (loading()) {
+    <div class="ai-plan-page__loading">
+      <mat-spinner diameter="40"></mat-spinner>
+      <p>Analyzing tasks and loading daily strategy...</p>
+    </div>
+  } @else {
+    @if (!hasActiveTasks()) {
+      <div class="ai-plan-page__empty">
+        <mat-icon class="large-icon">task_alt</mat-icon>
+        <h2>All Caught Up!</h2>
+        <p>You have no active or incomplete tasks. Add some tasks first to build a daily productivity plan.</p>
+        <a mat-stroked-button routerLink="/tasks" class="mt-3">Go to Tasks</a>
+      </div>
+    } @else if (!plan()) {
+      <div class="ai-plan-page__empty">
+        <mat-icon class="large-icon">auto_awesome</mat-icon>
+        <h2>Unlocking Daily Productivity</h2>
+        <p>Let AI analyze your active tasks based on priority, deadlines, and estimated times to build a productive daily sequence.</p>
+        <button mat-flat-button color="primary" (click)="generatePlan()" [disabled]="generating()" class="mt-3">
+          Generate First Plan
+        </button>
+      </div>
+    } @else {
+      <!-- Strategy Explanation -->
+      <mat-card class="strategy-card">
+        <mat-card-header>
+          <div mat-card-avatar class="strategy-card__avatar">
+            <mat-icon color="primary">lightbulb</mat-icon>
+          </div>
+          <mat-card-title>AI Strategy & Insights</mat-card-title>
+          <mat-card-subtitle>Generated {{ plan()?.createdAt | date:'shortTime' }}</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content class="strategy-card__content">
+          <p>{{ plan()?.planDetails?.explanation }}</p>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Planned Tasks Sequence -->
+      <div class="plan-sequence">
+        <h2>Suggested Task Order</h2>
+        <div class="plan-sequence__list">
+          @for (item of plannedTasks(); track item.taskId) {
+            @if (item.task) {
+              <mat-card class="plan-item-card" [class.plan-item-card--completed]="item.task.status === 'COMPLETED'">
+                <div class="plan-item-card__header">
+                  <div class="plan-item-card__badge">{{ item.suggestedOrder }}</div>
+                  
+                  <mat-checkbox
+                    [checked]="item.task.status === 'COMPLETED'"
+                    (change)="toggleTaskStatus(item.task)"
+                    color="primary"
+                    class="plan-item-card__checkbox"
+                  >
+                    <span class="plan-item-card__title" [class.completed-text]="item.task.status === 'COMPLETED'">
+                      {{ item.task.title }}
+                    </span>
+                  </mat-checkbox>
+
+                  <div class="plan-item-card__metadata">
+                    @if (item.task.priority) {
+                      <mat-chip-set class="priority-chip-set">
+                        <mat-chip [color]="getPriorityColor(item.task.priority)" highlighted>
+                          {{ item.task.priority }}
+                        </mat-chip>
+                      </mat-chip-set>
+                    }
+                    @if (item.task.dueDate) {
+                      <span class="due-badge" [class.due-badge--overdue]="(item.task.dueDate | date:'yyyy-MM-dd')! < (taskService.page().number | date:'yyyy-MM-dd')!">
+                        <mat-icon>event</mat-icon>
+                        {{ item.task.dueDate | date:'mediumDate' }}
+                      </span>
+                    }
+                    @if (item.task.estimatedMinutes) {
+                      <span class="duration-badge">
+                        <mat-icon>schedule</mat-icon>
+                        {{ item.task.estimatedMinutes }}m
+                      </span>
+                    }
+                  </div>
+                </div>
+                
+                <div class="plan-item-card__reason">
+                  <mat-icon class="reason-icon">info_outline</mat-icon>
+                  <p class="reason-text">{{ item.reason }}</p>
+                </div>
+              </mat-card>
+            }
+          }
+        </div>
+      </div>
+    }
+  }
+</div>

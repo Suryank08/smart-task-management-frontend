@@ -8,6 +8,19 @@
 
   <mat-card class="profile-page__card">
     <h2><mat-icon>badge</mat-icon>Account details</h2>
+
+    <div class="profile-page__avatar-section">
+      @if (showAvatarImage()) {
+        <img class="profile-page__avatar-img" [src]="auth.currentUser()?.avatarUrl" (error)="onAvatarError()" alt="User Profile" />
+      } @else {
+        <div class="profile-page__avatar-placeholder">{{ userInitials() }}</div>
+      }
+      <div class="profile-page__user-info">
+        <h3>{{ auth.currentUser()?.name }}</h3>
+        <p>{{ auth.currentUser()?.email }}</p>
+      </div>
+    </div>
+
     <form class="profile-form" [formGroup]="form" (ngSubmit)="submit()">
       <mat-form-field appearance="outline" class="profile-form__full">
         <mat-label>Full name</mat-label>

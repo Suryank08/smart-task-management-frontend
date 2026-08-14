@@ -28,11 +28,7 @@
             <div class="stat-card__value">{{ stats().pending }}</div>
             <div class="stat-card__label">Pending</div>
           </mat-card>
-          <mat-card class="stat-card stat-card--progress">
-            <span class="stat-card__badge"><mat-icon>autorenew</mat-icon></span>
-            <div class="stat-card__value">{{ stats().inProgress }}</div>
-            <div class="stat-card__label">In progress</div>
-          </mat-card>
+
           <mat-card class="stat-card stat-card--completed">
             <span class="stat-card__badge"><mat-icon>check_circle</mat-icon></span>
             <div class="stat-card__value">{{ stats().completed }}</div>
@@ -59,10 +55,10 @@
               @if (todayTasks().length === 0) {
                 <p class="dashboard__empty dashboard__empty--compact">Nothing due today.</p>
               } @else {
-                <mat-nav-list>
+                <div class="dashboard__task-list">
                   @for (task of todayTasks(); track task.id) {
-                    <a mat-list-item routerLink="/tasks">
-                      <div matListItemIcon style="display: flex; align-items: center; gap: 4px;">
+                    <a routerLink="/tasks" class="dashboard__task-row">
+                      <div class="dashboard__task-row-left">
                         <mat-checkbox
                           [checked]="task.status === 'COMPLETED'"
                           (click)="toggleComplete(task, $event)"
@@ -72,34 +68,37 @@
                           mat-icon-button
                           (click)="togglePin(task, $event)"
                           [matTooltip]="task.pinned ? 'Unpin task' : 'Pin task'"
-                          style="width: 32px; height: 32px; line-height: 32px;"
+                          class="dashboard__task-pin-btn"
                         >
-                          <mat-icon [style.color]="task.pinned ? '#3f51b5' : '#888888'" style="font-size: 18px; width: 18px; height: 18px;">push_pin</mat-icon>
+                          <mat-icon [style.color]="task.pinned ? '#3f51b5' : '#888888'">push_pin</mat-icon>
                         </button>
                       </div>
-                      <span
-                        matListItemTitle
-                        [class.dashboard__task-title--done]="task.status === 'COMPLETED'"
-                      >
-                        <mat-icon inline [class]="priorityMeta[task.priority].className">
-                          {{ priorityMeta[task.priority].icon }}
-                        </mat-icon>
-                        {{ task.title }}
-                      </span>
-                      <span matListItemLine>
-                        Due {{ task.dueDate | date: 'MMM d, y, h:mm a' }}
-                        @if (isOverdue(task.dueDate, task.status)) {
-                          <span class="dashboard__overdue-tag">Overdue</span>
-                        }
-                      </span>
-                      <mat-chip-set matListItemMeta>
-                        <mat-chip [class]="statusMeta[task.status].className" disabled>
-                          {{ statusMeta[task.status].label }}
-                        </mat-chip>
-                      </mat-chip-set>
+
+                      <div class="dashboard__task-row-content">
+                        <div class="dashboard__task-row-title" [class.dashboard__task-title--done]="task.status === 'COMPLETED'">
+                          <mat-icon class="dashboard__task-priority-icon" [class]="priorityMeta[task.priority].className">
+                            {{ priorityMeta[task.priority].icon }}
+                          </mat-icon>
+                          <span class="title-text">{{ task.title }}</span>
+                        </div>
+                        <div class="dashboard__task-row-due">
+                          Due {{ task.dueDate | date: 'MMM d, y, h:mm a' }}
+                          @if (isOverdue(task.dueDate, task.status)) {
+                            <span class="dashboard__overdue-tag">Overdue</span>
+                          }
+                        </div>
+                      </div>
+
+                      <div class="dashboard__task-row-right">
+                        <mat-chip-set>
+                          <mat-chip [class]="statusMeta[task.status].className" disabled>
+                            {{ statusMeta[task.status].label }}
+                          </mat-chip>
+                        </mat-chip-set>
+                      </div>
                     </a>
                   }
-                </mat-nav-list>
+                </div>
               }
             </div>
 
@@ -108,10 +107,10 @@
               @if (upcomingTasks().length === 0) {
                 <p class="dashboard__empty dashboard__empty--compact">Nothing upcoming.</p>
               } @else {
-                <mat-nav-list>
+                <div class="dashboard__task-list">
                   @for (task of upcomingTasks(); track task.id) {
-                    <a mat-list-item routerLink="/tasks">
-                      <div matListItemIcon style="display: flex; align-items: center; gap: 4px;">
+                    <a routerLink="/tasks" class="dashboard__task-row">
+                      <div class="dashboard__task-row-left">
                         <mat-checkbox
                           [checked]="task.status === 'COMPLETED'"
                           (click)="toggleComplete(task, $event)"
@@ -121,31 +120,34 @@
                           mat-icon-button
                           (click)="togglePin(task, $event)"
                           [matTooltip]="task.pinned ? 'Unpin task' : 'Pin task'"
-                          style="width: 32px; height: 32px; line-height: 32px;"
+                          class="dashboard__task-pin-btn"
                         >
-                          <mat-icon [style.color]="task.pinned ? '#3f51b5' : '#888888'" style="font-size: 18px; width: 18px; height: 18px;">push_pin</mat-icon>
+                          <mat-icon [style.color]="task.pinned ? '#3f51b5' : '#888888'">push_pin</mat-icon>
                         </button>
                       </div>
-                      <span
-                        matListItemTitle
-                        [class.dashboard__task-title--done]="task.status === 'COMPLETED'"
-                      >
-                        <mat-icon inline [class]="priorityMeta[task.priority].className">
-                          {{ priorityMeta[task.priority].icon }}
-                        </mat-icon>
-                        {{ task.title }}
-                      </span>
-                      <span matListItemLine>
-                        Due {{ task.dueDate | date: 'MMM d, y, h:mm a' }}
-                      </span>
-                      <mat-chip-set matListItemMeta>
-                        <mat-chip [class]="statusMeta[task.status].className" disabled>
-                          {{ statusMeta[task.status].label }}
-                        </mat-chip>
-                      </mat-chip-set>
+
+                      <div class="dashboard__task-row-content">
+                        <div class="dashboard__task-row-title" [class.dashboard__task-title--done]="task.status === 'COMPLETED'">
+                          <mat-icon class="dashboard__task-priority-icon" [class]="priorityMeta[task.priority].className">
+                            {{ priorityMeta[task.priority].icon }}
+                          </mat-icon>
+                          <span class="title-text">{{ task.title }}</span>
+                        </div>
+                        <div class="dashboard__task-row-due">
+                          Due {{ task.dueDate | date: 'MMM d, y, h:mm a' }}
+                        </div>
+                      </div>
+
+                      <div class="dashboard__task-row-right">
+                        <mat-chip-set>
+                          <mat-chip [class]="statusMeta[task.status].className" disabled>
+                            {{ statusMeta[task.status].label }}
+                          </mat-chip>
+                        </mat-chip-set>
+                      </div>
                     </a>
                   }
-                </mat-nav-list>
+                </div>
               }
             </div>
           }
@@ -184,10 +186,10 @@
               @if (tasksOnSelectedDate().length === 0) {
                 <p class="dashboard__empty dashboard__empty--compact">No tasks due this day.</p>
               } @else {
-                <mat-nav-list dense class="dashboard__calendar-list">
+                <div class="dashboard__task-list dashboard__task-list--dense">
                   @for (task of tasksOnSelectedDate(); track task.id) {
-                    <a mat-list-item routerLink="/tasks">
-                      <div matListItemIcon style="display: flex; align-items: center; gap: 4px;">
+                    <a routerLink="/tasks" class="dashboard__task-row dashboard__task-row--dense">
+                      <div class="dashboard__task-row-left">
                         <mat-checkbox
                           [checked]="task.status === 'COMPLETED'"
                           (click)="toggleComplete(task, $event)"
@@ -197,23 +199,23 @@
                           mat-icon-button
                           (click)="togglePin(task, $event)"
                           [matTooltip]="task.pinned ? 'Unpin task' : 'Pin task'"
-                          style="width: 32px; height: 32px; line-height: 32px;"
+                          class="dashboard__task-pin-btn"
                         >
-                          <mat-icon [style.color]="task.pinned ? '#3f51b5' : '#888888'" style="font-size: 18px; width: 18px; height: 18px;">push_pin</mat-icon>
+                          <mat-icon [style.color]="task.pinned ? '#3f51b5' : '#888888'">push_pin</mat-icon>
                         </button>
                       </div>
-                      <span
-                        matListItemTitle
-                        [class.dashboard__task-title--done]="task.status === 'COMPLETED'"
-                      >
-                        <mat-icon inline [class]="priorityMeta[task.priority].className">
-                          {{ priorityMeta[task.priority].icon }}
-                        </mat-icon>
-                        {{ task.title }}
-                      </span>
+
+                      <div class="dashboard__task-row-content">
+                        <div class="dashboard__task-row-title" [class.dashboard__task-title--done]="task.status === 'COMPLETED'">
+                          <mat-icon class="dashboard__task-priority-icon" [class]="priorityMeta[task.priority].className">
+                            {{ priorityMeta[task.priority].icon }}
+                          </mat-icon>
+                          <span class="title-text">{{ task.title }}</span>
+                        </div>
+                      </div>
                     </a>
                   }
-                </mat-nav-list>
+                </div>
               }
             </div>
           }

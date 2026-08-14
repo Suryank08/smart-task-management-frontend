@@ -65,7 +65,6 @@ export class DashboardPage implements OnInit {
     return {
       total: tasks.length,
       pending: tasks.filter((t) => t.status === 'PENDING').length,
-      inProgress: tasks.filter((t) => t.status === 'IN_PROGRESS').length,
       completed: tasks.filter((t) => t.status === 'COMPLETED').length,
       overdue: tasks.filter((t) => isOverdue(t.dueDate, t.status)).length,
     };
@@ -256,7 +255,6 @@ export class DashboardPage implements OnInit {
       startDate: task.startDate,
       dueDate: task.dueDate,
       estimatedMinutes: task.estimatedMinutes,
-      actualMinutes: task.actualMinutes,
       pinned: task.pinned,
       tagIds: task.tagIds,
     });
@@ -275,7 +273,6 @@ export class DashboardPage implements OnInit {
       startDate: task.startDate,
       dueDate: task.dueDate,
       estimatedMinutes: task.estimatedMinutes,
-      actualMinutes: task.actualMinutes,
       pinned: nextPinned,
       tagIds: task.tagIds,
     });

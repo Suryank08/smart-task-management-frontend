@@ -48,6 +48,11 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/profile/profile-page/profile-page').then((m) => m.ProfilePage),
       },
+      {
+        path: 'ai-plan',
+        loadComponent: () =>
+          import('./features/ai-plan/ai-plan-page/ai-plan-page').then((m) => m.AiPlanPage),
+      },
     ],
   },
   { path: '**', redirectTo: '' },

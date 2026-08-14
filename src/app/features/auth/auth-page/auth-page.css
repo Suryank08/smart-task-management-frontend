@@ -414,19 +414,15 @@
     backdrop-filter: none;
   }
 
-  /* Keep promo visible and stack vertically */
+  /* Hide promo sidebar on smaller screens */
   .auth-promo {
-    display: flex;
-    flex-direction: column;
-    padding: 2.5rem; /* Adjusted for mobile */
-    border-right: none;
-    border-bottom: 1px solid color-mix(in srgb, var(--mat-sys-outline-variant) 30%, transparent);
+    display: none;
   }
 
   .auth-form-side {
     width: 100%;
-    padding: 2.5rem; /* Adjusted for mobile */
-    background: var(--mat-sys-surface);
+    padding: 0; /* Clear padding to align with card margins */
+    background: transparent;
   }
 
   .auth-page__card {
@@ -450,7 +446,7 @@
     justify-content: center;
   }
 
-  .auth-page__card, .auth-promo {
+  .auth-page__card {
     padding: 1.5rem;
   }
 }
